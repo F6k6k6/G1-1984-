@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>複数G1勝利馬 完全一覧</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Shippori+Mincho:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #21262d;
+    --border2: #30363d;
+    --text: #c9d1d9;
+    --text-muted: #8b949e;
+    --text-bright: #f0e6d0;
+    --gold: #f0c060;
+    --gold-dark: #c06000;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Serif JP', serif;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e 55%, #0f3460);
+    border-bottom: 1px solid var(--border);
+    padding: 26px 24px 18px;
+  }
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .header-title-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .header-accent {
+    width: 5px;
+    height: 44px;
+    background: linear-gradient(var(--gold), var(--gold-dark));
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .header-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 3px;
+  }
+  .header-main {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: 0.05em;
+    font-family: 'Shippori Mincho', serif;
+  }
+  .header-desc {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 8px;
+    line-height: 1.9;
+  }
+
+  /* ── FILTERS ── */
+  #filters {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .filter-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  #searchInput {
+    padding: 6px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    width: 210px;
+  }
+  #searchInput:focus { border-color: var(--gold); }
+  .cat-btns, .win-btns {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .filter-btn.active {
+    border-color: var(--gold);
+    background: #2d2200;
+    color: var(--gold);
+  }
+  .win-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+  .win-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .win-btn.active {
+    border-color: var(--gold);
+    background: #2d2200;
+    color: var(--gold);
+  }
+  .win-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+  .sel-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .win-label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .sel-btn {
+    padding: 5px 11px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: inherit;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .sel-btn:hover { border-color: var(--gold); color: var(--gold); }
+  #countBadge {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+
+  /* ── TABLE ── */
+  #tableWrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px 60px;
+  }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 3px;
+    table-layout: fixed;
+  }
+  col.col-wins  { width: 64px; }
+  col.col-cat   { width: 72px; }
+  col.col-combo { width: auto; }
+  col.col-horses{ width: 170px; }
+  col.col-dist  { width: 180px; }
+  col.col-count { width: 52px; }
+  thead th {
+    text-align: left;
+    padding: 7px 12px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    overflow: hidden;
+  }
+  thead th:last-child { text-align: center; }
+  tbody tr {
+    background: var(--surface);
+    transition: background 0.15s;
+    cursor: default;
+  }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 10px 12px; vertical-align: middle; overflow: hidden; }
+
+  /* win badge */
+  .win-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 40px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  /* cat badge */
+  .cat-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  /* horse name links */
+  .horse-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  .horse-link:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+  }
+
+  /* race chips */
+  .combo-cell {
+    line-height: 1.8;
+  }
+  .combo-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 5px;
+    align-items: center;
+  }
+  .race-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .race-chip .times {
+    opacity: 0.75;
+    font-size: 11px;
+  }
+  .note-text {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-top: 5px;
+  }
+  /* horses cell */
+  .horses-cell {
+    min-width: 170px;
+    vertical-align: middle;
+  }
+  .horses-cell .horse-chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .horses-cell .horse-link {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+    background: linear-gradient(135deg, #1a2540 0%, #0f1a30 100%);
+    border: 1px solid rgba(240,198,96,0.5);
+    border-left: 3px solid var(--gold);
+    border-radius: 4px;
+    padding: 5px 11px 5px 10px;
+    color: #f5ecd0;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-family: 'Shippori Mincho', serif;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .horses-cell .horse-link:hover {
+    opacity: 1;
+    text-decoration: none;
+    border-left-color: #fff;
+    color: #fff;
+    background: linear-gradient(135deg, #243060 0%, #152040 100%);
+  }
+  /* count badge */
+  .count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  td.count-td { text-align: center; }
+
+  /* ── LEGEND ── */
+  #legend {
+    margin-top: 32px;
+    padding: 18px 24px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  #legend h3 {
+    color: var(--text-bright);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  #legend ul {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 2.2;
+    padding-left: 20px;
+  }
+
+  /* ── EMPTY ── */
+  #emptyMsg {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 60px 0;
+    font-size: 15px;
+    display: none;
+  }
+
+  /* ── DISTANCE CELL ── */
+  .dist-cell {
+    min-width: 160px;
+    padding: 10px 12px;
+    vertical-align: middle;
+  }
+  .dist-range-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+    letter-spacing: 0.04em;
+  }
+  .dist-range-label strong {
+    color: #d4c090;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .dist-bar-track {
+    position: relative;
+    height: 6px;
+    background: #21262d;
+    border-radius: 3px;
+    margin-bottom: 7px;
+    overflow: visible;
+  }
+  .dist-bar-fill {
+    position: absolute;
+    height: 100%;
+    border-radius: 3px;
+    top: 0;
+  }
+  .smile-badges {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+  }
+  .smile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .smile-S  { background:#1c1505; color:#fbbf24; border-color:#d97706; }
+  .smile-M  { background:#0c1a3a; color:#7dd3fc; border-color:#0369a1; }
+  .smile-I  { background:#0d2d1a; color:#6ee7b7; border-color:#059669; }
+  .smile-L  { background:#2a0d3a; color:#d8b4fe; border-color:#7c3aed; }
+  .smile-E  { background:#1f1230; color:#f0abfc; border-color:#a21caf; }
+  .smile-JG { background:#0c0a09; color:#d6d3d1; border-color:#78716c; }
+
+  /* ══════════════════════════════════════════
+     MOBILE LAYOUT  (max-width: 768px)
+  ══════════════════════════════════════════ */
+  @media (max-width: 768px) {
+
+    /* ── Header ── */
+    #header { padding: 16px 14px 12px; }
+    .header-main { font-size: 15px; letter-spacing: 0.02em; }
+    .header-desc { font-size: 11px; line-height: 1.7; }
+    .header-accent { width: 4px; height: 36px; }
+
+    /* ── Sticky filter bar ── */
+    #filters { padding: 8px 12px; }
+    .filter-inner { gap: 6px; }
+    #searchInput {
+      width: 100%;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 10px;
+    }
+    .cat-btns { gap: 4px; flex-wrap: wrap; }
+    .filter-btn { padding: 5px 10px; font-size: 11px; }
+    .win-label { font-size: 11px; white-space: nowrap; }
+    .win-btns { gap: 4px; }
+    .win-btn { width: 28px; height: 28px; font-size: 11px; }
+    .sel-btn { padding: 4px 8px; font-size: 11px; }
+    /* スマホではhover状態を残さない */
+    .win-btn:hover { border-color: var(--border2); color: var(--text-muted); }
+    .win-btn.active:hover { border-color: var(--gold); color: var(--gold); }
+    .sel-btn:hover { border-color: var(--border2); color: var(--text-muted); }
+    .filter-btn:hover { border-color: var(--border2); color: var(--text-muted); }
+    .filter-btn.active:hover { border-color: var(--gold); color: var(--gold); }
+    #countBadge { font-size: 11px; }
+
+    /* ── テーブルを非表示、カードを表示 ── */
+    #tableWrap { padding: 10px 10px 60px; }
+    table, thead, tbody, th, tr { display: none !important; }
+    #emptyMsg { font-size: 13px; }
+    #legend { margin-top: 20px; padding: 14px 16px; }
+    #legend h3 { font-size: 12px; }
+    #legend ul { font-size: 11px; line-height: 2.0; }
+
+    /* ── カードコンテナ ── */
+    #cardList { display: flex; flex-direction: column; gap: 10px; }
+
+    /* ── 個別カード ── */
+    .horse-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 12px 14px;
+      transition: background 0.15s;
+    }
+    .horse-card:active { background: var(--surface2); }
+
+    /* カード上段：勝数バッジ ＋ 区分バッジ ＋ 馬名横スクロール */
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      min-width: 0;
+    }
+    .card-top-row1 {
+      display: contents; /* フラット化して card-top 直下に展開 */
+    }
+    /* 馬名横スクロールエリア */
+    .card-horse-names {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 5px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+      padding-bottom: 2px;
+    }
+    .card-horse-names::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
+    .card-horse-name-chip {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      position: relative;
+      background: linear-gradient(135deg, #1a2540 0%, #0f1a30 100%);
+      border: 1px solid rgba(240,198,96,0.5);
+      border-left: 3px solid var(--gold);
+      border-radius: 4px;
+      padding: 5px 11px 5px 10px;
+      color: #f5ecd0;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      font-family: 'Shippori Mincho', serif;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(240,198,96,0.2);
+    }
+    .card-win-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 32px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+      padding: 0 6px;
+    }
+    .card-cat-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .card-count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 24px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 0 6px;
+      flex-shrink: 0;
+    }
+
+    /* レースチップ群 */
+    .card-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px 5px;
+      margin-bottom: 8px;
+    }
+    .card-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px 9px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .card-chip .times { opacity: 0.75; font-size: 11px; }
+
+    /* 距離バー */
+    .card-dist {
+      margin: 8px 0 6px;
+    }
+    .card-dist .dist-range-label { font-size: 11px; margin-bottom: 4px; }
+    .card-dist .dist-bar-track { height: 5px; }
+    .card-dist .smile-badges { margin-top: 5px; gap: 4px; }
+    .card-dist .smile-badge { font-size: 10px; padding: 2px 6px; }
+
+    /* 該当馬（スマホでは上段に移動したため下段は非表示） */
+    .card-horses {
+      display: none;
+    }
+    .card-horses-label {
+      display: none;
+    }
+
+    /* note */
+    .card-note {
+      color: var(--text-muted);
+      font-size: 11px;
+      line-height: 1.7;
+      margin-top: 6px;
+    }
+  }
+
+  /* ── PC では cardList を非表示 ── */
+  @media (min-width: 769px) {
+    #cardList { display: none; }
+  }
+
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div class="header-inner">
+    <div class="header-title-row">
+      <div class="header-accent"></div>
+      <div>
+        <div class="header-sub">JAPAN GRADED RACING 1984–2025</div>
+        <h1 class="header-main">複数G1勝利馬 ── 勝鞍の組み合わせ完全一覧</h1>
+      </div>
+    </div>
+    <p class="header-desc">
+      JRA G1・Jpn1（地方交流）・JG1（障害）・海外G1を2勝以上した全馬を収録。同一レース複数勝利は「×N」で表記。<br>
+      データ照合：JRA公式サイト / makworld.net / Wikipedia 各馬個別ページ（2025年末時点）
+    </p>
+  </div>
+</div>
+
+<div id="filters">
+  <div class="filter-inner">
+    <input id="searchInput" type="text" placeholder="馬名・レース名で検索…">
+    <div class="cat-btns">
+      <button class="filter-btn active" data-cat="全て">全て</button>
+      <button class="filter-btn" data-cat="芝">芝</button>
+      <button class="filter-btn" data-cat="混合">混合</button>
+      <button class="filter-btn" data-cat="ダート">ダート</button>
+      <button class="filter-btn" data-cat="障害">障害</button>
+    </div>
+    <div class="win-row">
+      <span class="win-label">勝数：</span>
+      <div class="win-btns">
+        <button class="win-btn active" data-w="2">2</button>
+        <button class="win-btn active" data-w="3">3</button>
+        <button class="win-btn active" data-w="4">4</button>
+        <button class="win-btn active" data-w="5">5</button>
+        <button class="win-btn active" data-w="6">6</button>
+        <button class="win-btn active" data-w="7">7</button>
+        <button class="win-btn active" data-w="9">9</button>
+        <button class="win-btn active" data-w="10">10</button>
+        <button class="win-btn active" data-w="11">11</button>
+      </div>
+    </div>
+    <div class="sel-row">
+      <button class="sel-btn" id="btnSelectAll">全選択</button>
+      <button class="sel-btn" id="btnClearAll">全解除</button>
+      <button class="sel-btn" id="btnSort">勝数 ↑ 昇順</button>
+      <span id="countBadge">0件</span>
+    </div>
+  </div>
+</div>
+
+<div id="tableWrap">
+
+  <div id="cardList"></div>
+
+  <table>
+    <colgroup>
+      <col class="col-wins">
+      <col class="col-cat">
+      <col class="col-combo">
+      <col class="col-horses">
+      <col class="col-dist">
+      <col class="col-count">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>G1勝数</th>
+        <th>区分</th>
+        <th>G1勝鞍の組み合わせ</th>
+        <th>該当馬</th>
+        <th>距離適性</th>
+        <th>頭数</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div id="emptyMsg">該当する組み合わせが見つかりません</div>
+
+  <div id="legend">
+    <h3>凡例・補足</h3>
+    <ul>
+      <li>「×N」は同一レースをN回制覇（連覇または年を置いた複数回勝利）</li>
+      <li>G1の対象：JRA G1 / Jpn1（地方交流G1級）/ JG1（障害G1）/ 国際G1（海外）＝ 1984年グレード制導入以降</li>
+      <li>地方交流Jpn1は「(Jpn1)」、海外G1は「(海外)」と付記</li>
+      <li>同一組み合わせを複数馬が達成した場合は「頭数」欄に計上（橙：3頭以上、青：2頭）</li>
+      <li>【距離適性】勝利したG1レースの最短〜最長距離を表示。距離区分はSMILE国際基準に準拠：
+        <b style="color:#fbbf24">S スプリント</b>（〜1300m）・
+        <b style="color:#7dd3fc">M マイル</b>（1301〜1899m）・
+        <b style="color:#6ee7b7">I 中距離</b>（1900〜2100m）・
+        <b style="color:#d8b4fe">L ロング</b>（2101〜2700m）・
+        <b style="color:#f0abfc">E 超長距離</b>（2701m〜）・
+        <b style="color:#d6d3d1">JG 障害</b>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const HORSES = [
+  // 障害
+  { name:"オジュウチョウサン", url:"https://db.netkeiba.com/horse/2011101125/", wins:9, cat:"障害", combo:"中山グランドジャンプ×6＋中山大障害×3", note:"中山GJ(16・17・18・19・20・22)×6、中山大障害(16・17・21)×3。障害JG1最多9勝" },
+  { name:"イロゴトシ", url:"https://db.netkeiba.com/horse/2017109123/", wins:2, cat:"障害", combo:"中山グランドジャンプ×2", note:"【イロゴトシ】2023・2024年連覇。九州産馬初のJG1制覇" },
+  { name:"エコロデュエル", url:"https://db.netkeiba.com/horse/2019101614/", wins:2, cat:"障害", combo:"中山グランドジャンプ＋中山大障害", note:"【エコロデュエル】中山GJ(2025)→中山大障害(2025)。同一年春秋JG1制覇はオジュウチョウサン以来8年ぶり" },
+  { name:"ゴーカイ", url:"https://db.netkeiba.com/horse/1993105987/", wins:2, cat:"障害", combo:"中山グランドジャンプ×2", note:"【ゴーカイ】中山GJ(2000・2001)連覇。中山大障害は3年連続2着。2000・2001年JRA賞最優秀障害馬" },
+  { name:"アップトゥデイト", url:"https://db.netkeiba.com/horse/2010105861/", wins:2, cat:"障害", combo:"中山グランドジャンプ＋中山大障害", note:"【アップトゥデイト】中山GJ(2015)→中山大障害(2015)。同一年春秋JG1制覇。2015年JRA賞最優秀障害馬" },
+  { name:"マルカラスカル", url:"https://db.netkeiba.com/horse/2002100604/", wins:2, cat:"障害", combo:"中山グランドジャンプ＋中山大障害", note:"【マルカラスカル】中山大障害(2006)→中山GJ(2008)（勝利順は大障害が先）" },
+  // 芝9
+  { name:"アーモンドアイ", url:"https://db.netkeiba.com/horse/2015104961/", wins:9, cat:"芝", combo:"桜花賞＋優駿牝馬＋秋華賞＋ジャパンC×2＋ドバイターフ(海外)＋天皇賞(秋)×2＋ヴィクトリアマイル", note:"ジャパンC(18・20)×2は2年おきの再制覇、天皇賞(秋)(19・20)×2は連覇" },
+  // 芝7
+  { name:"シンボリルドルフ", url:"https://db.netkeiba.com/horse/1981107017/", wins:7, cat:"芝", combo:"皐月賞＋日本ダービー＋菊花賞＋有馬記念×2＋天皇賞(春)＋ジャパンC", note:"有馬記念(84・85)×2。史上初の無敗七冠馬" },
+  { name:"テイエムオペラオー", url:"https://db.netkeiba.com/horse/1996100292/", wins:7, cat:"芝", combo:"皐月賞＋天皇賞(春)×2＋宝塚記念＋天皇賞(秋)＋ジャパンC＋有馬記念", note:"天皇賞(春)(00・01)×2" },
+  { name:"ディープインパクト", url:"https://db.netkeiba.com/horse/2002100816/", wins:7, cat:"芝", combo:"皐月賞＋日本ダービー＋菊花賞＋天皇賞(春)＋宝塚記念＋ジャパンC＋有馬記念" },
+  { name:"ウオッカ", url:"https://db.netkeiba.com/horse/2004104258/", wins:7, cat:"芝", combo:"阪神JF＋日本ダービー＋天皇賞(秋)＋ジャパンC＋ヴィクトリアマイル＋安田記念×2", note:"安田記念(08・09)×2。日本ダービーは牝馬として64年ぶり制覇" },
+  { name:"キタサンブラック", url:"https://db.netkeiba.com/horse/2012102013/", wins:7, cat:"芝", combo:"菊花賞＋天皇賞(春)×2＋ジャパンC＋大阪杯＋天皇賞(秋)＋有馬記念", note:"天皇賞(春)(16・17)×2" },
+  { name:"ジェンティルドンナ", url:"https://db.netkeiba.com/horse/2009106253/", wins:7, cat:"芝", combo:"桜花賞＋優駿牝馬＋秋華賞＋ジャパンC×2＋有馬記念＋ドバイシーマクラシック(海外)", note:"ジャパンC(12・13)×2" },
+  // 芝6
+  { name:"ブエナビスタ", url:"https://db.netkeiba.com/horse/2006103319/", wins:6, cat:"芝", combo:"阪神JF＋桜花賞＋優駿牝馬＋ヴィクトリアマイル＋天皇賞(秋)＋ジャパンC" },
+  { name:"オルフェーヴル", url:"https://db.netkeiba.com/horse/2008102636/", wins:6, cat:"芝", combo:"皐月賞＋日本ダービー＋菊花賞＋有馬記念×2＋宝塚記念", note:"有馬記念(11・13)×2は2年おきの再制覇" },
+  { name:"ゴールドシップ", url:"https://db.netkeiba.com/horse/2009102739/", wins:6, cat:"芝", combo:"皐月賞＋菊花賞＋有馬記念＋宝塚記念×2＋天皇賞(春)", note:"宝塚記念(13・14)×2" },
+  { name:"グランアレグリア", url:"https://db.netkeiba.com/horse/2016104532/", wins:6, cat:"芝", combo:"桜花賞＋安田記念＋スプリンターズS＋マイルCS×2＋ヴィクトリアマイル", note:"マイルCS(20・21)×2" },
+  { name:"イクイノックス", url:"https://db.netkeiba.com/horse/2019105219/", wins:6, cat:"芝", combo:"天皇賞(秋)×2＋有馬記念＋宝塚記念＋ドバイシーマクラシック(海外)＋ジャパンC", note:"天皇賞(秋)(22・23)×2" },
+  { name:"ロードカナロア", url:"https://db.netkeiba.com/horse/2008103552/", wins:6, cat:"芝", combo:"スプリンターズS×2＋香港スプリント(海外)×2＋高松宮記念＋安田記念", note:"スプリンターズS(12・13)×2、香港スプリント(12・13)×2" },
+  { name:"モーリス", url:"https://db.netkeiba.com/horse/2011100655/", wins:6, cat:"芝", combo:"安田記念＋マイルCS＋香港マイル(海外)＋チャンピオンズマイル(海外)＋天皇賞(秋)＋香港C(海外)" },
+  { name:"アグネスデジタル", url:"https://db.netkeiba.com/horse/1997110025/", wins:6, cat:"混合", combo:"マイルCS＋マイルCS南部杯(Jpn1)＋天皇賞(秋)＋香港C(海外)＋フェブラリーS＋安田記念", note:"芝・ダート両G1制覇。グレード制導入後初の芝ダート双方G1勝利馬" },
+  // 芝5
+  { name:"ナリタブライアン", url:"https://db.netkeiba.com/horse/1991108889/", wins:5, cat:"芝", combo:"朝日杯FS＋皐月賞＋日本ダービー＋菊花賞＋有馬記念", note:"三冠後に古馬と初対決となった有馬記念(94)も制し3歳4冠達成。3歳でのG1 5勝は史上唯一" },
+  { name:"ダイワメジャー", url:"https://db.netkeiba.com/horse/2001103114/", wins:5, cat:"芝", combo:"皐月賞＋天皇賞(秋)＋マイルCS×2＋安田記念", note:"マイルCS(06・07)×2" },
+  { name:"タイキシャトル", url:"https://db.netkeiba.com/horse/1994109686/", wins:5, cat:"芝", combo:"マイルCS×2＋安田記念＋スプリンターズS＋ジャック・ル・マロワ賞(海外)", note:"マイルCS(97・98)×2" },
+  { name:"メジロドーベル", url:"https://db.netkeiba.com/horse/1994108393/", wins:5, cat:"芝", combo:"阪神JF＋桜花賞＋優駿牝馬＋秋華賞＋エリザベス女王杯" },
+  { name:"アパパネ", url:"https://db.netkeiba.com/horse/2007103234/", wins:5, cat:"芝", combo:"阪神JF＋桜花賞＋優駿牝馬＋秋華賞＋ヴィクトリアマイル" },
+  { name:"コントレイル", url:"https://db.netkeiba.com/horse/2017101835/", wins:5, cat:"芝", combo:"ホープフルS＋皐月賞＋日本ダービー＋菊花賞＋ジャパンC", note:"父ディープインパクトに続く無敗三冠達成。引退レースのジャパンC(21)を制して有終の美" },
+  { name:"ドウデュース", url:"https://db.netkeiba.com/horse/2019105283/", wins:5, cat:"芝", combo:"朝日杯FS＋日本ダービー＋有馬記念＋天皇賞(秋)＋ジャパンC" },
+  // 芝4
+  { name:"スペシャルウィーク", url:"https://db.netkeiba.com/horse/1995103211/", wins:4, cat:"芝", combo:"日本ダービー＋天皇賞(春)＋天皇賞(秋)＋ジャパンC" },
+  { name:"メジロマックイーン", url:"https://db.netkeiba.com/horse/1987107235/", wins:4, cat:"芝", combo:"菊花賞＋天皇賞(春)×2＋宝塚記念", note:"天皇賞(春)(91・92)×2。91年父子三代制覇、92年トウカイテイオーを破り連覇。93年は3連覇を狙うもライスシャワーに2着" },
+  { name:"シンボリクリスエス", url:"https://db.netkeiba.com/horse/1999110099/", wins:4, cat:"芝", combo:"天皇賞(秋)×2＋有馬記念×2", note:"天皇賞(秋)(02・03)×2、有馬記念(02・03)×2" },
+  { name:"ダイワスカーレット", url:"https://db.netkeiba.com/horse/2004103198/", wins:4, cat:"芝", combo:"桜花賞＋秋華賞＋エリザベス女王杯＋有馬記念", note:"有馬記念(08)で牝馬として64年ぶり制覇（16年後の2024年にレガレイラが更新するまで記録保持）" },
+  { name:"クロノジェネシス", url:"https://db.netkeiba.com/horse/2016104750/", wins:4, cat:"芝", combo:"秋華賞＋宝塚記念×2＋有馬記念", note:"宝塚記念(20・21)×2" },
+  { name:"リバティアイランド", url:"https://db.netkeiba.com/horse/2020103656/", wins:4, cat:"芝", combo:"阪神JF＋桜花賞＋優駿牝馬＋秋華賞" },
+  { name:"ジャンタルマンタル", url:"https://db.netkeiba.com/horse/2021107171/", wins:4, cat:"芝", combo:"朝日杯FS＋NHKマイルC＋安田記念＋マイルCS", note:"2023〜25年。牡馬出走可能な国内芝マイルG1を全て制覇（史上初）" },
+  { name:"トウカイテイオー", url:"https://db.netkeiba.com/horse/1988101025/", wins:4, cat:"芝", combo:"皐月賞＋日本ダービー＋ジャパンC＋有馬記念" },
+  { name:"オグリキャップ", url:"https://db.netkeiba.com/horse/1985102167/", wins:4, cat:"芝", combo:"有馬記念×2＋マイルCS＋安田記念", note:"有馬記念(88・90)×2は2年おきの再制覇" },
+  { name:"メイショウサムソン", url:"https://db.netkeiba.com/horse/2003102205/", wins:4, cat:"芝", combo:"皐月賞＋日本ダービー＋天皇賞(春)＋天皇賞(秋)", note:"皐月賞(06)→日本ダービー(06)→天皇賞(春)(07)→天皇賞(秋)(07)" },
+  { name:"リスグラシュー", url:"https://db.netkeiba.com/horse/2014106220/", wins:4, cat:"芝", combo:"エリザベス女王杯＋宝塚記念＋コックスプレート(海外)＋有馬記念", note:"エリザベス女王杯(18)→宝塚記念(19)→コックスプレート(19)→有馬記念(19)" },
+  { name:"エイシンプレストン", url:"https://db.netkeiba.com/horse/1997110161/", wins:4, cat:"芝", combo:"朝日杯FS＋香港マイル(海外)＋クイーンエリザベス2世C(海外)×2", note:"クイーンエリザベス2世C(02・03)×2" },
+  { name:"ラッキーライラック", url:"https://db.netkeiba.com/horse/2015105046/", wins:4, cat:"芝", combo:"阪神JF＋エリザベス女王杯×2＋大阪杯", note:"エリザベス女王杯(19・20)×2" },
+  { name:"ミスターシービー", url:"https://db.netkeiba.com/horse/1980107022/", wins:4, cat:"芝", combo:"皐月賞＋日本ダービー＋菊花賞＋天皇賞(秋)", note:"皐月賞(83)→日本ダービー(83)→菊花賞(83)→天皇賞(秋)(84)。シンボリルドルフと同世代の三冠馬" },
+  // 芝3
+  { name:"ビワハヤヒデ", url:"https://db.netkeiba.com/horse/1990103355/", wins:3, cat:"芝", combo:"菊花賞＋天皇賞(春)＋宝塚記念" },
+  { name:"マヤノトップガン", url:"https://db.netkeiba.com/horse/1992102988/", wins:3, cat:"芝", combo:"菊花賞＋有馬記念＋宝塚記念" },
+  { name:"グラスワンダー", url:"https://db.netkeiba.com/horse/1995108676/", wins:3, cat:"芝", combo:"朝日杯FS＋有馬記念×2", note:"有馬記念(98・99)×2" },
+  { name:"マンハッタンカフェ", url:"https://db.netkeiba.com/horse/1998101554/", wins:3, cat:"芝", combo:"菊花賞＋有馬記念＋天皇賞(春)" },
+  { name:"ヒシミラクル", url:"https://db.netkeiba.com/horse/1999104693/", wins:3, cat:"芝", combo:"菊花賞＋天皇賞(春)＋宝塚記念" },
+  { name:"スティルインラブ", url:"https://db.netkeiba.com/horse/2000106022/", wins:3, cat:"芝", combo:"桜花賞＋優駿牝馬＋秋華賞" },
+  { name:"スウィープトウショウ", url:"https://db.netkeiba.com/horse/2001104313/", wins:3, cat:"芝", combo:"秋華賞＋宝塚記念＋エリザベス女王杯", note:"宝塚記念(05)で39年ぶり史上2頭目の牝馬制覇" },
+  { name:"ゼンノロブロイ", url:"https://db.netkeiba.com/horse/2000101517/", wins:3, cat:"芝", combo:"天皇賞(秋)＋ジャパンC＋有馬記念", note:"天皇賞(秋)(04)→ジャパンC(04)→有馬記念(04)。テイエムオペラオー以来史上2頭目の秋古馬三冠達成。有馬記念はJRAレコード2分29秒5" },
+  { name:"ジャスタウェイ", url:"https://db.netkeiba.com/horse/2009106461/", wins:3, cat:"芝", combo:"天皇賞(秋)＋ドバイターフ(海外)＋安田記念", note:"2014年ワールドベストレースホースランキング世界1位（130ポンド）。現レース名はドバイターフ" },
+  { name:"ヴィクトワールピサ", url:"https://db.netkeiba.com/horse/2007102923/", wins:3, cat:"混合", combo:"皐月賞＋有馬記念＋ドバイワールドC(海外)", note:"ドバイワールドC(11)で日本馬初制覇" },
+  { name:"ニッポーテイオー", url:"https://db.netkeiba.com/horse/1983102584/", wins:3, cat:"芝", combo:"天皇賞(秋)＋マイルCS＋安田記念", note:"天皇賞(秋)(87)→マイルCS(87)→安田記念(88)" },
+  { name:"ニホンピロウイナー", url:"https://db.netkeiba.com/horse/1980106362/", wins:3, cat:"芝", combo:"マイルCS×2＋安田記念", note:"マイルCS(84・85)×2。日本マイル王の元祖" },
+  { name:"ミホシンザン", url:"https://db.netkeiba.com/horse/1982103164/", wins:3, cat:"芝", combo:"皐月賞＋菊花賞＋天皇賞(春)", note:"皐月賞(85)→菊花賞(85)→天皇賞(春)(87)" },
+  { name:"ドリームジャーニー", url:"https://db.netkeiba.com/horse/2004102753/", wins:3, cat:"芝", combo:"朝日杯FS＋宝塚記念＋有馬記念", note:"朝日杯FS(06)→宝塚記念(09)→有馬記念(09)。兄オルフェーヴルとともに兄弟でG1多数制覇" },
+  { name:"タマモクロス", url:"https://db.netkeiba.com/horse/1984101673/", wins:3, cat:"芝", combo:"天皇賞(春)＋宝塚記念＋天皇賞(秋)", note:"天皇賞(春)(88)→宝塚記念(88)→天皇賞(秋)(88)。同一年に春秋天皇賞・宝塚記念を制覇" },
+  { name:"スーパークリーク", url:"https://db.netkeiba.com/horse/1985104409/", wins:3, cat:"芝", combo:"菊花賞＋天皇賞(秋)＋天皇賞(春)", note:"菊花賞(88)→天皇賞(秋)(89)→天皇賞(春)(90)" },
+  { name:"イナリワン", url:"https://db.netkeiba.com/horse/1984106229/", wins:3, cat:"芝", combo:"天皇賞(春)＋宝塚記念＋有馬記念", note:"天皇賞(春)(89)→宝塚記念(89)→有馬記念(89)。1989年グランプリホース" },
+  { name:"フィエールマン", url:"https://db.netkeiba.com/horse/2015105075/", wins:3, cat:"芝", combo:"菊花賞＋天皇賞(春)×2", note:"【フィエールマン】天皇賞(春)(19・20)×2" },
+  { name:"ストレイトガール", url:"https://db.netkeiba.com/horse/2009100301/", wins:3, cat:"芝", combo:"ヴィクトリアマイル×2＋スプリンターズS", note:"ヴィクトリアマイル(15・16)×2" },
+  { name:"デュランダル", url:"https://db.netkeiba.com/horse/1999106756/", wins:3, cat:"芝", combo:"スプリンターズS＋マイルCS×2", note:"マイルCS(03・04)×2" },
+  { name:"メジロラモーヌ", url:"https://db.netkeiba.com/horse/1983103914/", wins:3, cat:"芝", combo:"桜花賞＋優駿牝馬＋エリザベス女王杯", note:"桜花賞(86)→優駿牝馬(86)→エリザベス女王杯(86)。1986年の牝馬三冠（当時は桜花賞・オークス・エリザベス女王杯）" },
+  { name:"アドマイヤマーズ", url:"https://db.netkeiba.com/horse/2016104422/", wins:3, cat:"芝", combo:"朝日杯FS＋NHKマイルC＋香港マイル(海外)", note:"朝日杯FS(18)→NHKマイルC(19)→香港マイル(19)" },
+  { name:"ニシノフラワー", url:"https://db.netkeiba.com/horse/1989107262/", wins:3, cat:"芝", combo:"阪神JF＋桜花賞＋スプリンターズS", note:"阪神JF(91)→桜花賞(92)→スプリンターズS(92)。現・阪神JF" },
+  { name:"テイエムオーシャン", url:"https://db.netkeiba.com/horse/1998102673/", wins:3, cat:"芝", combo:"阪神JF＋桜花賞＋秋華賞", note:"現・阪神JF" },
+  { name:"ファレノプシス", url:"https://db.netkeiba.com/horse/1995105092/", wins:3, cat:"芝", combo:"桜花賞＋秋華賞＋エリザベス女王杯", note:"桜花賞(98)→秋華賞(98)→エリザベス女王杯(00)" },
+  { name:"アドマイヤムーン", url:"https://db.netkeiba.com/horse/2003102991/", wins:3, cat:"芝", combo:"ドバイターフ(海外)＋宝塚記念＋ジャパンC", note:"ドバイデューティーフリー(07・現ドバイターフ)→宝塚記念(07)→ジャパンC(07)" },
+  { name:"メイショウマンボ", url:"https://db.netkeiba.com/horse/2010102094/", wins:3, cat:"芝", combo:"優駿牝馬＋秋華賞＋エリザベス女王杯", note:"優駿牝馬(13)→秋華賞(13)→エリザベス女王杯(13)" },
+  { name:"タイトルホルダー", url:"https://db.netkeiba.com/horse/2018103559/", wins:3, cat:"芝", combo:"菊花賞＋天皇賞(春)＋宝塚記念" },
+  { name:"ソダシ", url:"https://db.netkeiba.com/horse/2018105233/", wins:3, cat:"芝", combo:"阪神JF＋桜花賞＋ヴィクトリアマイル" },
+  { name:"ラヴズオンリーユー", url:"https://db.netkeiba.com/horse/2016104648/", wins:3, cat:"芝", combo:"優駿牝馬＋BCフィリー&メアターフ(海外)＋香港C(海外)", note:"BCフィリー&メアターフ(21)で日本調教馬初のブリーダーズカップ制覇。同年エクリプス賞最優秀芝牝馬も受賞" },
+  { name:"デアリングタクト", url:"https://db.netkeiba.com/horse/2017100720/", wins:3, cat:"芝", combo:"桜花賞＋優駿牝馬＋秋華賞" },
+  { name:"ソングライン", url:"https://db.netkeiba.com/horse/2018105355/", wins:3, cat:"芝", combo:"ヴィクトリアマイル＋安田記念×2", note:"安田記念(22・24)×2は2年おきの再制覇" },
+  { name:"レガレイラ", url:"https://db.netkeiba.com/horse/2021105898/", wins:3, cat:"芝", combo:"ホープフルS＋有馬記念＋エリザベス女王杯", note:"有馬記念(24)で3歳牝馬として64年ぶり制覇" },
+  { name:"エルコンドルパサー", url:"https://db.netkeiba.com/horse/1995108742/", wins:3, cat:"芝", combo:"NHKマイルC＋ジャパンC＋サンクルー大賞(海外)", note:"サンクルー大賞(99)は日本調教馬初かつ現在唯一の欧州2400m G1制覇。凱旋門賞は2着惜敗。1999年年度代表馬" },
+  { name:"ロゴタイプ", url:"https://db.netkeiba.com/horse/2010103783/", wins:3, cat:"芝", combo:"朝日杯FS＋皐月賞＋安田記念" },
+  { name:"ヤマニンゼファー", url:"https://db.netkeiba.com/horse/1988101069/", wins:3, cat:"芝", combo:"安田記念＋マイルCS＋天皇賞(秋)" },
+  { name:"ミホノブルボン", url:"https://db.netkeiba.com/horse/1989103049/", wins:3, cat:"芝", combo:"朝日杯FS＋皐月賞＋日本ダービー", note:"無敗の二冠を達成。菊花賞はライスシャワーに敗れ三冠を逃した" },
+  { name:"ライスシャワー", url:"https://db.netkeiba.com/horse/1989107699/", wins:3, cat:"芝", combo:"菊花賞＋天皇賞(春)×2", note:"【ライスシャワー】天皇賞(春)(93・95)×2。93年・95年と2年おきに再制覇。ミホノブルボンの三冠・メジロマックイーンの天皇賞春3連覇をいずれも阻止" },
+  { name:"トランセンド", url:"https://db.netkeiba.com/horse/2006104736/", wins:3, cat:"ダート", combo:"チャンピオンズC×2＋フェブラリーS", note:"チャンピオンズC(10・11)×2" },
+  // 芝2
+  { name:"サニーブライアン", url:"https://db.netkeiba.com/horse/1994105719/", wins:2, cat:"芝", combo:"皐月賞＋日本ダービー" },
+  { name:"ネオユニヴァース", url:"https://db.netkeiba.com/horse/2000101426/", wins:2, cat:"芝", combo:"皐月賞＋日本ダービー" },
+  { name:"セイウンスカイ", url:"https://db.netkeiba.com/horse/1995107393/", wins:2, cat:"芝", combo:"皐月賞＋菊花賞" },
+  { name:"エアシャカール", url:"https://db.netkeiba.com/horse/1997103398/", wins:2, cat:"芝", combo:"皐月賞＋菊花賞", note:"皐月賞(00)→菊花賞(00)。日本ダービーはアグネスフライトにわずか7cmのハナ差で2着。史上最も三冠に近づいた二冠馬" },
+  { name:"エピファネイア", url:"https://db.netkeiba.com/horse/2010104155/", wins:2, cat:"芝", combo:"菊花賞＋ジャパンC" },
+  { name:"ベガ", url:"https://db.netkeiba.com/horse/1990104462/", wins:2, cat:"芝", combo:"桜花賞＋優駿牝馬" },
+  { name:"スターズオンアース", url:"https://db.netkeiba.com/horse/2019104740/", wins:2, cat:"芝", combo:"桜花賞＋優駿牝馬" },
+  { name:"チェルヴィニア", url:"https://db.netkeiba.com/horse/2021105643/", wins:2, cat:"芝", combo:"優駿牝馬＋秋華賞" },
+  { name:"エンブロイダリー", url:"https://db.netkeiba.com/horse/2022105185/", wins:2, cat:"芝", combo:"桜花賞＋秋華賞", note:"桜花賞(25)→秋華賞(25)。父アドマイヤマーズ産駒初G1制覇" },
+  { name:"ヒシアマゾン", url:"https://db.netkeiba.com/horse/1991109852/", wins:2, cat:"芝", combo:"阪神JF＋エリザベス女王杯", note:"阪神JFは現・阪神JF" },
+  { name:"ファインモーション", url:"https://db.netkeiba.com/horse/1999110187/", wins:2, cat:"芝", combo:"秋華賞＋エリザベス女王杯" },
+  { name:"エアグルーヴ", url:"https://db.netkeiba.com/horse/1993109154/", wins:2, cat:"芝", combo:"優駿牝馬＋天皇賞(秋)", note:"天皇賞(秋)(97)で牝馬として17年ぶり制覇。1997年年度代表馬。牝馬の時代を切り開いたパイオニア" },
+  { name:"ダイタクヘリオス", url:"https://db.netkeiba.com/horse/1987102798/", wins:2, cat:"芝", combo:"マイルCS×2", note:"マイルCS(91・92)×2" },
+  { name:"タップダンスシチー", url:"https://db.netkeiba.com/horse/1997110043/", wins:2, cat:"芝", combo:"宝塚記念＋ジャパンC" },
+  { name:"シュネルマイスター", url:"https://db.netkeiba.com/horse/2018110007/", wins:2, cat:"芝", combo:"NHKマイルC＋マイルCS" },
+  { name:"ベラジオオペラ", url:"https://db.netkeiba.com/horse/2020102781/", wins:2, cat:"芝", combo:"大阪杯×2", note:"大阪杯(24・25)×2" },
+  { name:"シャフリヤール", url:"https://db.netkeiba.com/horse/2018105165/", wins:2, cat:"芝", combo:"日本ダービー＋ドバイシーマクラシック(海外)" },
+  { name:"ダノンデサイル", url:"https://db.netkeiba.com/horse/2021105143/", wins:2, cat:"芝", combo:"日本ダービー＋ドバイシーマクラシック(海外)" },
+  { name:"グローリーヴェイズ", url:"https://db.netkeiba.com/horse/2015104063/", wins:2, cat:"芝", combo:"天皇賞(春)＋香港ヴァーズ(海外)" },
+  { name:"パンサラッサ", url:"https://db.netkeiba.com/horse/2017106711/", wins:2, cat:"混合", combo:"ドバイターフ(海外)＋サウジC(海外)", note:"国内G1勝利なし（海外G1 2勝）" },
+  { name:"モズアスコット", url:"https://db.netkeiba.com/horse/2014110031/", wins:2, cat:"混合", combo:"安田記念＋フェブラリーS", note:"安田記念(18)→フェブラリーS(20)。芝・ダート双方G1制覇（史上5頭目）" },
+  { name:"ミュージアムマイル", url:"https://db.netkeiba.com/horse/2022105081/", wins:2, cat:"芝", combo:"皐月賞＋有馬記念", note:"皐月賞(25)→有馬記念(25)。3歳馬での有馬記念制覇はレガレイラに続く2年連続" },
+  { name:"ノースフライト", url:"https://db.netkeiba.com/horse/1990100908/", wins:2, cat:"芝", combo:"安田記念＋マイルCS", note:"【ノースフライト】安田記念(94)→マイルCS(94)。同一年春秋マイル制覇" },
+  { name:"バンブーメモリー", url:"https://db.netkeiba.com/horse/1985104122/", wins:2, cat:"芝", combo:"安田記念＋スプリンターズS", note:"安田記念(89)→スプリンターズS(90)。スプリンターズS初代チャンピオン" },
+  { name:"メジロデュレン", url:"https://db.netkeiba.com/horse/1983106973/", wins:2, cat:"芝", combo:"菊花賞＋有馬記念" },
+  { name:"サクラチヨノオー", url:"https://db.netkeiba.com/horse/1985100743/", wins:2, cat:"芝", combo:"朝日杯FS＋日本ダービー" },
+  { name:"ヤエノムテキ", url:"https://db.netkeiba.com/horse/1985104215/", wins:2, cat:"芝", combo:"皐月賞＋天皇賞(秋)", note:"皐月賞(88)→天皇賞(秋)(90)" },
+  { name:"アイネスフウジン", url:"https://db.netkeiba.com/horse/1987100579/", wins:2, cat:"芝", combo:"朝日杯FS＋日本ダービー" },
+  { name:"サクラバクシンオー", url:"https://db.netkeiba.com/horse/1989108341/", wins:2, cat:"芝", combo:"スプリンターズS×2", note:"スプリンターズS(92・93)×2" },
+  { name:"ダンスパートナー", url:"https://db.netkeiba.com/horse/1992109549/", wins:2, cat:"芝", combo:"優駿牝馬＋エリザベス女王杯", note:"優駿牝馬(95)→エリザベス女王杯(95)" },
+  { name:"バブルガムフェロー", url:"https://db.netkeiba.com/horse/1993109219/", wins:2, cat:"芝", combo:"朝日杯FS＋天皇賞(秋)", note:"朝日杯FS(95)→天皇賞(秋)(96)" },
+  { name:"エアジハード", url:"https://db.netkeiba.com/horse/1995107978/", wins:2, cat:"芝", combo:"安田記念＋マイルCS", note:"【エアジハード】安田記念(99)→マイルCS(99)。同年春秋マイル制覇" },
+  { name:"ブラックホーク", url:"https://db.netkeiba.com/horse/1994109361/", wins:2, cat:"芝", combo:"スプリンターズS＋安田記念", note:"スプリンターズS(00)→安田記念(01)" },
+  { name:"ウイングアロー", url:"https://db.netkeiba.com/horse/1995101039/", wins:2, cat:"ダート", combo:"フェブラリーS＋チャンピオンズC", note:"フェブラリーS(00)→チャンピオンズC(00)。チャンピオンズCは現チャンピオンズC" },
+  { name:"イーグルカフェ", url:"https://db.netkeiba.com/horse/1997110118/", wins:2, cat:"混合", combo:"NHKマイルC＋チャンピオンズC", note:"【イーグルカフェ】NHKマイルC(00)→チャンピオンズC(02)。芝G1→ダートG1の転向成功" },
+  { name:"クロフネ", url:"https://db.netkeiba.com/horse/1998110135/", wins:2, cat:"混合", combo:"NHKマイルC＋チャンピオンズC", note:"【クロフネ】NHKマイルC(01)→チャンピオンズC(01)。芝・ダート両G1制覇" },
+  { name:"ジャングルポケット", url:"https://db.netkeiba.com/horse/1998101786/", wins:2, cat:"芝", combo:"日本ダービー＋ジャパンC" },
+  { name:"トロットスター", url:"https://db.netkeiba.com/horse/1996103651/", wins:2, cat:"芝", combo:"高松宮記念＋スプリンターズS" },
+  { name:"ビリーヴ", url:"https://db.netkeiba.com/horse/1998101038/", wins:2, cat:"芝", combo:"スプリンターズS＋高松宮記念", note:"【ビリーヴ】スプリンターズS(02)→高松宮記念(03)" },
+  { name:"アドマイヤコジーン", url:"https://db.netkeiba.com/horse/1996106512/", wins:2, cat:"芝", combo:"朝日杯FS＋安田記念", note:"朝日杯FS(99)→安田記念(01)" },
+  { name:"デルタブルース", url:"https://db.netkeiba.com/horse/2001103389/", wins:2, cat:"芝", combo:"菊花賞＋メルボルンC(海外)", note:"菊花賞(04)→メルボルンC(06・海外)" },
+  { name:"アドマイヤグルーヴ", url:"https://db.netkeiba.com/horse/2000107542/", wins:2, cat:"芝", combo:"エリザベス女王杯×2", note:"エリザベス女王杯(03・04)×2" },
+  { name:"キングカメハメハ", url:"https://db.netkeiba.com/horse/2001103460/", wins:2, cat:"芝", combo:"NHKマイルC＋日本ダービー" },
+  { name:"ラインクラフト", url:"https://db.netkeiba.com/horse/2002100959/", wins:2, cat:"芝", combo:"桜花賞＋NHKマイルC" },
+  { name:"カワカミプリンセス", url:"https://db.netkeiba.com/horse/2003107045/", wins:2, cat:"芝", combo:"優駿牝馬＋秋華賞" },
+  { name:"トールポピー", url:"https://db.netkeiba.com/horse/2005102453/", wins:2, cat:"芝", combo:"阪神JF＋優駿牝馬" },
+  { name:"ディープスカイ", url:"https://db.netkeiba.com/horse/2005101358/", wins:2, cat:"芝", combo:"NHKマイルC＋日本ダービー" },
+  { name:"キンシャサノキセキ", url:"https://db.netkeiba.com/horse/2003110212/", wins:2, cat:"芝", combo:"高松宮記念×2", note:"高松宮記念(10・11)×2" },
+  { name:"エイシンフラッシュ", url:"https://db.netkeiba.com/horse/2007102951/", wins:2, cat:"芝", combo:"日本ダービー＋天皇賞(秋)", note:"【エイシンフラッシュ】日本ダービー(10)→天皇賞(秋)(12)" },
+  { name:"ローズキングダム", url:"https://db.netkeiba.com/horse/2007103404/", wins:2, cat:"芝", combo:"朝日杯FS＋ジャパンC", note:"朝日杯FS(09)→ジャパンC(10)" },
+  { name:"グランプリボス", url:"https://db.netkeiba.com/horse/2008103388/", wins:2, cat:"芝", combo:"朝日杯FS＋NHKマイルC" },
+  { name:"カレンチャン", url:"https://db.netkeiba.com/horse/2007102807/", wins:2, cat:"芝", combo:"スプリンターズS＋高松宮記念", note:"【カレンチャン】スプリンターズS(11)→高松宮記念(12)" },
+  { name:"テスタマッタ", url:"https://db.netkeiba.com/horse/2006110130/", wins:2, cat:"ダート", combo:"チャンピオンズC＋フェブラリーS", note:"チャンピオンズC(10)→フェブラリーS(12)" },
+  { name:"フェノーメノ", url:"https://db.netkeiba.com/horse/2009106599/", wins:2, cat:"芝", combo:"天皇賞(春)×2", note:"天皇賞(春)(13・14)×2" },
+  { name:"ミッキーアイル", url:"https://db.netkeiba.com/horse/2011103916/", wins:2, cat:"芝", combo:"NHKマイルC＋マイルCS", note:"【ミッキーアイル】NHKマイルC(14)→マイルCS(16)" },
+  { name:"ミッキークイーン", url:"https://db.netkeiba.com/horse/2012104870/", wins:2, cat:"芝", combo:"優駿牝馬＋秋華賞" },
+  { name:"ラブリーデイ", url:"https://db.netkeiba.com/horse/2010104298/", wins:2, cat:"芝", combo:"宝塚記念＋天皇賞(秋)", note:"宝塚記念(15)→天皇賞(秋)(15)" },
+  { name:"ノンコノユメ", url:"https://db.netkeiba.com/horse/2012104314/", wins:2, cat:"ダート", combo:"ジャパンダートクラシック(Jpn1)＋フェブラリーS", note:"ジャパンダートダービー(14・Jpn1)→フェブラリーS(16)。旧レース名での勝利" },
+  { name:"ドゥラメンテ", url:"https://db.netkeiba.com/horse/2012104511/", wins:2, cat:"芝", combo:"皐月賞＋日本ダービー" },
+  { name:"サトノダイヤモンド", url:"https://db.netkeiba.com/horse/2013106101/", wins:2, cat:"芝", combo:"菊花賞＋有馬記念" },
+  { name:"ヴィブロス", url:"https://db.netkeiba.com/horse/2013106007/", wins:2, cat:"芝", combo:"秋華賞＋ドバイターフ(海外)", note:"秋華賞(16)→ドバイターフ(17・海外)" },
+  { name:"レイデオロ", url:"https://db.netkeiba.com/horse/2014106201/", wins:2, cat:"芝", combo:"日本ダービー＋天皇賞(秋)", note:"【レイデオロ】日本ダービー(17)→天皇賞(秋)(18)" },
+  { name:"ディアドラ", url:"https://db.netkeiba.com/horse/2014106191/", wins:2, cat:"芝", combo:"秋華賞＋ナッソーS(海外)", note:"秋華賞(17)→ナッソーS(18・海外)" },
+  { name:"スワーヴリチャード", url:"https://db.netkeiba.com/horse/2014106083/", wins:2, cat:"芝", combo:"大阪杯＋ジャパンC" },
+  { name:"インディチャンプ", url:"https://db.netkeiba.com/horse/2015104688/", wins:2, cat:"芝", combo:"安田記念＋マイルCS", note:"【インディチャンプ】安田記念(19)→マイルCS(19)" },
+  { name:"ワールドプレミア", url:"https://db.netkeiba.com/horse/2016104854/", wins:2, cat:"芝", combo:"菊花賞＋天皇賞(春)", note:"菊花賞(19)→天皇賞(春)(21)" },
+  { name:"ダノンスマッシュ", url:"https://db.netkeiba.com/horse/2015102377/", wins:2, cat:"芝", combo:"香港スプリント(海外)＋高松宮記念", note:"香港スプリント(20・海外)→高松宮記念(21)" },
+  { name:"ノームコア", url:"https://db.netkeiba.com/horse/2015104765/", wins:2, cat:"芝", combo:"ヴィクトリアマイル＋香港C(海外)", note:"ヴィクトリアマイル(19)→香港C(19・海外)" },
+  { name:"スタニングローズ", url:"https://db.netkeiba.com/horse/2019105565/", wins:2, cat:"芝", combo:"秋華賞＋エリザベス女王杯", note:"【スタニングローズ】秋華賞(22)→エリザベス女王杯(23)" },
+  { name:"アグネスワールド", url:"https://db.netkeiba.com/horse/1995108665/", wins:2, cat:"芝", combo:"アベイ・ド・ロンシャン賞(海外)＋ジュライC(海外)", note:"アベイ・ド・ロンシャン賞(99・海外)→ジュライC(00・海外)。国内G1勝利なし" },
+  { name:"メイセイオペラ", url:"https://db.netkeiba.com/horse/1994104060/", wins:2, cat:"ダート", combo:"マイルCS南部杯(Jpn1)＋フェブラリーS", note:"マイルCS南部杯(98・Jpn1)→フェブラリーS(99)。地方（岩手）所属馬初のJRA G1制覇" },
+  // ダート多勝
+  { name:"コパノリッキー", url:"https://db.netkeiba.com/horse/2010106548/", wins:11, cat:"ダート", combo:"フェブラリーS×2＋かしわ記念(Jpn1)×3＋JBCクラシック(Jpn1)×2＋マイルCS南部杯(Jpn1)×2＋帝王賞(Jpn1)＋東京大賞典", note:"フェブラリーS(14・15)×2連覇、かしわ記念(14・16・17)×3（14→16は2年おき再制覇・16→17連覇）、JBCクラシック(14・15)×2連覇、マイルCS南部杯(16・17)×2連覇、帝王賞(16)、東京大賞典(17)。日本最多G1/Jpn1 11勝" },
+  { name:"ホッコータルマエ", url:"https://db.netkeiba.com/horse/2009100921/", wins:10, cat:"ダート", combo:"川崎記念(Jpn1)×3＋かしわ記念(Jpn1)＋帝王賞(Jpn1)×2＋JBCクラシック(Jpn1)＋東京大賞典×2＋チャンピオンズC", note:"川崎記念(14・15・16)×3連覇（2016年にJpn1史上初の10勝を達成）、帝王賞(13・14)×2連覇、JBCクラシック(13)、かしわ記念(13)、東京大賞典(12・13)×2連覇、チャンピオンズC(14)。ダートG1/Jpn1 10勝" },
+  { name:"ヴァーミリアン", url:"https://db.netkeiba.com/horse/2002100877/", wins:9, cat:"ダート", combo:"川崎記念(Jpn1)×2＋JBCクラシック(Jpn1)×3＋チャンピオンズC＋東京大賞典＋フェブラリーS＋帝王賞(Jpn1)", note:"川崎記念(07・10)×2は3年おきの再制覇。JBCクラシック(07・08・09)×3連覇、チャンピオンズC(07)、東京大賞典(07)、フェブラリーS(08)、帝王賞(09)" },
+  { name:"エスポワールシチー", url:"https://db.netkeiba.com/horse/2005102837/", wins:9, cat:"ダート", combo:"チャンピオンズC＋フェブラリーS＋かしわ記念(Jpn1)×3＋マイルCS南部杯(Jpn1)×3＋JBCスプリント(Jpn1)", note:"チャンピオンズC(09)、フェブラリーS(10)、かしわ記念(10・11・12)×3連覇、マイルCS南部杯(09・12・13)×3（09→12は3年おき再制覇・12→13連覇）、JBCスプリント(13)" },
+  { name:"カネヒキリ", url:"https://db.netkeiba.com/horse/2002100978/", wins:7, cat:"ダート", combo:"フェブラリーS×2＋チャンピオンズC×2＋帝王賞(Jpn1)＋JBCクラシック(Jpn1)＋東京大賞典", note:"フェブラリーS(06・07)×2、チャンピオンズC(05・06)×2、帝王賞(06)、JBCクラシック(06)、東京大賞典(08)" },
+  { name:"アドマイヤドン", url:"https://db.netkeiba.com/horse/1999107052/", wins:7, cat:"混合", combo:"朝日杯FS＋JBCクラシック(Jpn1)×3＋帝王賞(Jpn1)＋フェブラリーS＋マイルCS南部杯(Jpn1)", note:"朝日杯FS(02)、JBCクラシック(03・04・05)×3、帝王賞(04)、フェブラリーS(05)、マイルCS南部杯(05)" },
+  { name:"ブルーコンコルド", url:"https://db.netkeiba.com/horse/2000107570/", wins:7, cat:"ダート", combo:"JBCスプリント(Jpn1)＋JBCマイル(Jpn1)＋マイルCS南部杯(Jpn1)×3＋かしわ記念(Jpn1)＋東京大賞典", note:"JBCスプリント(05)、JBCマイル(06)、マイルCS南部杯(06・07・08)×3、かしわ記念(07)、東京大賞典(06)" },
+  { name:"スマートファルコン", url:"https://db.netkeiba.com/horse/2005100097/", wins:6, cat:"ダート", combo:"帝王賞(Jpn1)×2＋東京大賞典×2＋川崎記念(Jpn1)＋JBCクラシック(Jpn1)", note:"帝王賞(10・11)×2、東京大賞典(09・10)×2、川崎記念(11)、JBCクラシック(10)" },
+  { name:"フリオーソ", url:"https://db.netkeiba.com/horse/2004106867/", wins:6, cat:"ダート", combo:"全日本2歳優駿(Jpn1)＋ジャパンダートクラシック(Jpn1)＋帝王賞(Jpn1)×2＋川崎記念(Jpn1)＋かしわ記念(Jpn1)", note:"全日本2歳優駿(07)、ジャパンダートクラシック(07、旧ジャパンダートダービー)、帝王賞(12・13)×2、川崎記念(12)、かしわ記念(12)" },
+  { name:"レモンポップ", url:"https://db.netkeiba.com/horse/2018110015/", wins:6, cat:"ダート", combo:"フェブラリーS＋チャンピオンズC×2＋マイルCS南部杯(Jpn1)×2＋さきたま杯(Jpn1)", note:"フェブラリーS(23)、チャンピオンズC(23・24)×2、マイルCS南部杯(23・24)×2、さきたま杯(24)" },
+  { name:"ゴールドドリーム", url:"https://db.netkeiba.com/horse/2013106119/", wins:5, cat:"ダート", combo:"フェブラリーS＋チャンピオンズC＋かしわ記念(Jpn1)×2＋帝王賞(Jpn1)", note:"フェブラリーS(17)、チャンピオンズC(17)、かしわ記念(18・19)×2連覇、帝王賞(18)" },
+  { name:"オメガパフューム", url:"https://db.netkeiba.com/horse/2015104273/", wins:5, cat:"ダート", combo:"東京大賞典×4＋帝王賞(Jpn1)", note:"東京大賞典(18・19・20・21)×4、帝王賞(21)。東京大賞典前人未踏の4連覇" },
+  { name:"アジュディミツオー", url:"https://db.netkeiba.com/horse/2001104554/", wins:5, cat:"ダート", combo:"東京大賞典×2＋川崎記念(Jpn1)＋かしわ記念(Jpn1)＋帝王賞(Jpn1)", note:"東京大賞典(04・05)×2、川崎記念(06)、かしわ記念(06)、帝王賞(06)。2005・2006年度NAR年度代表馬" },
+  { name:"フォーエバーヤング", url:"https://db.netkeiba.com/horse/2021105727/", wins:6, cat:"ダート", combo:"全日本2歳優駿(Jpn1)＋ジャパンダートクラシック(Jpn1)＋東京大賞典＋BCクラシック(海外)＋サウジC(海外)×2", note:"全日本2歳優駿(23)、JDC(24)、東京大賞典(24)、BCクラシック(25)、サウジC(25・26)×2。国内3勝、海外G1 3勝。2025年度JRA賞年度代表馬" },
+  { name:"ウシュバテソーロ", url:"https://db.netkeiba.com/horse/2017103843/", wins:4, cat:"ダート", combo:"東京大賞典×2＋ドバイワールドC(海外)＋川崎記念(Jpn1)", note:"東京大賞典(22・23)×2、ドバイワールドC(23)、川崎記念(23)" },
+  { name:"タイムパラドックス", url:"https://db.netkeiba.com/horse/1998101683/", wins:4, cat:"ダート", combo:"JBCクラシック(Jpn1)×2＋川崎記念(Jpn1)＋帝王賞(Jpn1)", note:"JBCクラシック(04・05)×2、川崎記念(05)、帝王賞(05)" },
+  { name:"メイショウハリオ", url:"https://db.netkeiba.com/horse/2017106404/", wins:4, cat:"ダート", combo:"帝王賞(Jpn1)×2＋かしわ記念(Jpn1)＋川崎記念(Jpn1)", note:"帝王賞(22・23)×2、かしわ記念(23)、川崎記念(24)。帝王賞史上初連覇(22・23)" },
+  { name:"テーオーケインズ", url:"https://db.netkeiba.com/horse/2017101010/", wins:3, cat:"ダート", combo:"帝王賞(Jpn1)＋チャンピオンズC＋JBCクラシック(Jpn1)" },
+  { name:"ウィルソンテソーロ", url:"https://db.netkeiba.com/horse/2019102383/", wins:2, cat:"ダート", combo:"JBCクラシック(Jpn1)＋マイルCS南部杯(Jpn1)", note:"JBCクラシック2024年制覇、南部杯2025年制覇" },
+  { name:"カフェファラオ", url:"https://db.netkeiba.com/horse/2017110151/", wins:2, cat:"ダート", combo:"フェブラリーS×2", note:"フェブラリーS(21・22)×2" },
+  { name:"カンパニー", url:"https://db.netkeiba.com/horse/2001103435/", wins:2, cat:"芝", combo:"天皇賞(秋)＋マイルCS", note:"天皇賞(秋)(09)→マイルCS(09)。同年秋2冠制覇。8歳でのJRA平地GI制覇は史上初" },
+  { name:"サクラローレル", url:"https://db.netkeiba.com/horse/1991103498/", wins:2, cat:"芝", combo:"天皇賞(春)＋有馬記念", note:"天皇賞(春)(96)→有馬記念(96)。1996年年度代表馬" },
+  { name:"ハーツクライ", url:"https://db.netkeiba.com/horse/2001103038/", wins:2, cat:"芝", combo:"有馬記念＋ドバイシーマクラシック(海外)", note:"有馬記念(05)でディープインパクトに唯一先着。ドバイシーマクラシック(06)は4馬身差圧勝" },
+  { name:"ジェニュイン", url:"https://db.netkeiba.com/horse/1992109450/", wins:2, cat:"芝", combo:"皐月賞＋マイルCS", note:"皐月賞(95)→マイルCS(95)" },
+  { name:"メジロパーマー", url:"https://db.netkeiba.com/horse/1987105372/", wins:2, cat:"芝", combo:"宝塚記念＋有馬記念", note:"宝塚記念(92)→有馬記念(92)。史上5頭目の春秋グランプリ制覇。有馬記念は15番人気での大金星" },
+  { name:"サートゥルナーリア", url:"https://db.netkeiba.com/horse/2016104505/", wins:2, cat:"芝", combo:"ホープフルS＋皐月賞", note:"ホープフルS(18)→皐月賞(19)。無敗での皐月賞制覇はディープインパクト以来14年ぶり" },
+  { name:"アルアイン", url:"https://db.netkeiba.com/horse/2014106046/", wins:2, cat:"芝", combo:"皐月賞＋大阪杯", note:"皐月賞(17)→大阪杯(18)" },
+  { name:"サトノクラウン", url:"https://db.netkeiba.com/horse/2012104668/", wins:2, cat:"芝", combo:"宝塚記念＋香港ヴァーズ(海外)", note:"香港ヴァーズ(16・海外)→宝塚記念(17)" },
+  { name:"ローレルゲレイロ", url:"https://db.netkeiba.com/horse/2004100933/", wins:2, cat:"芝", combo:"高松宮記念＋スプリンターズS", note:"高松宮記念(09)→スプリンターズS(09)。同年春秋スプリントG1制覇" },
+  { name:"ファインニードル", url:"https://db.netkeiba.com/horse/2013100612/", wins:2, cat:"芝", combo:"高松宮記念＋スプリンターズS", note:"高松宮記念(18)→スプリンターズS(18)。同年春秋スプリントG1制覇" },
+  { name:"レッドファルクス", url:"https://db.netkeiba.com/horse/2011104416/", wins:2, cat:"芝", combo:"スプリンターズS×2", note:"スプリンターズS(16・17)×2連覇" },
+  { name:"ゴールドアリュール", url:"https://db.netkeiba.com/horse/1999106689/", wins:4, cat:"ダート", combo:"ジャパンダートクラシック(Jpn1)＋ダービーグランプリ(当時Jpn1)＋東京大賞典＋フェブラリーS", note:"JDC(02・旧ジャパンダートダービー)、ダービーグランプリ(02)、東京大賞典(02)、フェブラリーS(03)。ダービーグランプリは2007年開催をもって休止・復活後はJpn1規格なし（勝利当時はJpn1）。ダートGIを制した唯一のサンデーサイレンス産駒" },
+  { name:"サクセスブロッケン", url:"https://db.netkeiba.com/horse/2005106204/", wins:2, cat:"ダート", combo:"ジャパンダートクラシック(Jpn1)＋フェブラリーS", note:"JDC(08・旧ジャパンダートダービー)→フェブラリーS(09)" },
+  { name:"リアルインパクト", url:"https://db.netkeiba.com/horse/2008103244/", wins:2, cat:"芝", combo:"安田記念＋香港マイル(海外)", note:"安田記念(11)→香港マイル(14・海外)。3年越しの海外G1制覇" },
+  { name:"トロットサンダー", url:"https://db.netkeiba.com/horse/1989107416/", wins:2, cat:"芝", combo:"マイルCS＋安田記念", note:"マイルCS(95)→安田記念(96)。当時JRA史上最高齢のG1制覇（後にカンパニーが更新）" },
+  { name:"ギャロップダイナ", url:"https://db.netkeiba.com/horse/1980101941/", wins:2, cat:"芝", combo:"天皇賞(秋)＋安田記念", note:"天皇賞(秋)(85)で13番人気ながらシンボリルドルフを撃破。安田記念(86)も制覇" },
+  { name:"モーニン", url:"https://db.netkeiba.com/horse/2012110091/", wins:2, cat:"ダート", combo:"フェブラリーS＋JBCスプリント(Jpn1)", note:"フェブラリーS(16)→JBCスプリント(16)" },
+  { name:"ダイナガリバー", url:"https://db.netkeiba.com/horse/1983104089/", wins:2, cat:"芝", combo:"日本ダービー＋有馬記念", note:"日本ダービー(85)→有馬記念(85)。3歳で春秋グランプリ両制覇" },
+  { name:"ハットトリック", url:"https://db.netkeiba.com/horse/2001103018/", wins:2, cat:"芝", combo:"マイルCS＋香港マイル(海外)", note:"マイルCS(05)→香港マイル(05・海外)。同年秋2戦連続G1制覇" },
+  { name:"サクラスターオー", url:"https://db.netkeiba.com/horse/1984100919/", wins:2, cat:"芝", combo:"皐月賞＋菊花賞", note:"皐月賞(87)→菊花賞(87)。1987年年度代表馬。有馬記念で骨折し翌年死亡。｢菊の季節にサクラが満開｣" },
+  { name:"サッカーボーイ", url:"https://db.netkeiba.com/horse/1985103538/", wins:2, cat:"芝", combo:"阪神3歳S＋マイルCS", note:"阪神3歳S(87)→マイルCS(88)。現・阪神JF" },
+  { name:"メジャーエンブレム", url:"https://db.netkeiba.com/horse/2013105840/", wins:2, cat:"芝", combo:"阪神JF＋NHKマイルC", note:"阪神JF(15)→NHKマイルC(16)。2015年JRA賞最優秀2歳牝馬" },
+  { name:"ウインブライト", url:"https://db.netkeiba.com/horse/2014100222/", wins:2, cat:"芝", combo:"クイーンエリザベス2世C(海外)＋香港C(海外)", note:"QEII C(19)→香港C(19)。同年秋に海外G1 2連勝。2019年JRA賞最優秀4歳以上牡馬" },
+  { name:"エイシンヒカリ", url:"https://db.netkeiba.com/horse/2011101273/", wins:2, cat:"芝", combo:"香港C(海外)＋イスパーン賞(海外)", note:"香港C(15)→イスパーン賞(16)。国内G1未勝利ながら海外G1 2勝。イスパーン賞は8馬身差の圧勝でワールドランキング日本馬単独首位を獲得" },
+  { name:"カツラギエース", url:"https://db.netkeiba.com/horse/1980101425/", wins:2, cat:"芝", combo:"宝塚記念＋ジャパンC", note:"宝塚記念(84)→ジャパンC(84)。ジャパンC初代日本馬制覇。同年の三冠馬シンボリルドルフを破る10番人気での大金星" },
+  { name:"エフフォーリア", url:"https://db.netkeiba.com/horse/2018105027/", wins:3, cat:"芝", combo:"皐月賞＋天皇賞(秋)＋有馬記念", note:"皐月賞(21)→天皇賞(秋)(21)→有馬記念(21)。2021年JRA賞年度代表馬。3歳で古馬王道G1を2勝した史上3頭目の馬" },
+  { name:"メリーナイス", url:"https://db.netkeiba.com/horse/1984100990/", wins:2, cat:"芝", combo:"朝日杯3歳S＋日本ダービー" },
+];
+
+// ============================================================
+// STYLES
+// ============================================================
+const CAT_STYLE = {
+  "芝":   { bg:"#065f46", text:"#6ee7b7", border:"#34d39344" },
+  "混合": { bg:"#1e3a5f", text:"#93c5fd", border:"#3b82f644" },
+  "ダート":{ bg:"#78350f", text:"#fde68a", border:"#fbbf2444" },
+  "障害": { bg:"#991b1b", text:"#fca5a5", border:"#f8717144" },
+};
+
+function winBadge(w) {
+  if (w >= 11) return { bg:"linear-gradient(135deg,#92400e,#f59e0b)", border:"#fbbf24", text:"#fff7ed" };
+  if (w >= 9)  return { bg:"linear-gradient(135deg,#7c2d12,#dc2626)", border:"#ef4444", text:"#fff1f2" };
+  if (w >= 7)  return { bg:"linear-gradient(135deg,#4c1d95,#7c3aed)", border:"#a78bfa", text:"#f5f3ff" };
+  if (w >= 6)  return { bg:"linear-gradient(135deg,#1e3a8a,#2563eb)", border:"#60a5fa", text:"#eff6ff" };
+  if (w >= 5)  return { bg:"linear-gradient(135deg,#065f46,#059669)", border:"#34d399", text:"#ecfdf5" };
+  if (w >= 4)  return { bg:"linear-gradient(135deg,#0c4a6e,#0284c7)", border:"#38bdf8", text:"#f0f9ff" };
+  if (w >= 3)  return { bg:"linear-gradient(135deg,#134e4a,#0d9488)", border:"#2dd4bf", text:"#f0fdfa" };
+  return        { bg:"#161b22", border:"#30363d", text:"#8b949e" };
+}
+
+const RACE_COLOR = {
+  "皐月賞":               { bg:"#1e3a8a", text:"#93c5fd", border:"#3b82f6" },
+  "日本ダービー":          { bg:"#1d4ed8", text:"#bfdbfe", border:"#60a5fa" },
+  "菊花賞":               { bg:"#1e40af", text:"#a5b4fc", border:"#818cf8" },
+  "桜花賞":               { bg:"#9d174d", text:"#fbcfe8", border:"#f472b6" },
+  "優駿牝馬":             { bg:"#be185d", text:"#fce7f3", border:"#f9a8d4" },
+  "秋華賞":               { bg:"#7e22ce", text:"#f0abfc", border:"#d946ef" },
+  "阪神JF":               { bg:"#581c87", text:"#e9d5ff", border:"#a855f7" },
+  "天皇賞(春)":           { bg:"#14532d", text:"#86efac", border:"#22c55e" },
+  "天皇賞(秋)":           { bg:"#166534", text:"#bbf7d0", border:"#4ade80" },
+  "有馬記念":             { bg:"#7f1d1d", text:"#fecaca", border:"#f87171" },
+  "宝塚記念":             { bg:"#991b1b", text:"#ffd1d1", border:"#fb7185" },
+  "ジャパンC":            { bg:"#92400e", text:"#fde68a", border:"#f59e0b" },
+  "安田記念":             { bg:"#0e7490", text:"#a5f3fc", border:"#22d3ee" },
+  "マイルCS":             { bg:"#0369a1", text:"#bae6fd", border:"#38bdf8" },
+  "NHKマイルC":           { bg:"#075985", text:"#e0f2fe", border:"#7dd3fc" },
+  "ヴィクトリアマイル":    { bg:"#0c4a6e", text:"#cffafe", border:"#67e8f9" },
+  "スプリンターズS":       { bg:"#c2410c", text:"#ffedd5", border:"#fb923c" },
+  "高松宮記念":            { bg:"#9a3412", text:"#fed7aa", border:"#f97316" },
+  "朝日杯FS":             { bg:"#3730a3", text:"#e0e7ff", border:"#818cf8" },
+  "ホープフルS":          { bg:"#312e81", text:"#e0e7ff", border:"#6366f1" },
+  "エリザベス女王杯":      { bg:"#86198f", text:"#fae8ff", border:"#e879f9" },
+  "大阪杯":               { bg:"#064e3b", text:"#a7f3d0", border:"#34d399" },
+  "フェブラリーS":         { bg:"#78350f", text:"#fef3c7", border:"#fbbf24" },
+  "チャンピオンズC":       { bg:"#7c2d12", text:"#fff7ed", border:"#fb923c" },
+  "川崎記念(Jpn1)":        { bg:"#431407", text:"#fed7aa", border:"#f97316" },
+  "帝王賞(Jpn1)":          { bg:"#451a03", text:"#fef3c7", border:"#f59e0b" },
+  "かしわ記念(Jpn1)":      { bg:"#713f12", text:"#fef9c3", border:"#eab308" },
+  "東京大賞典":            { bg:"#7c2d12", text:"#ffedd5", border:"#fb923c" },
+  "JBCクラシック(Jpn1)":   { bg:"#6b2200", text:"#fed7aa", border:"#ea580c" },
+  "JBCスプリント(Jpn1)":   { bg:"#881337", text:"#ffe4e6", border:"#fb7185" },
+  "JBCマイル(Jpn1)":       { bg:"#7c1d3a", text:"#fecdd3", border:"#f43f5e" },
+  "マイルCS南部杯(Jpn1)":  { bg:"#5c3300", text:"#fed7aa", border:"#d97706" },
+  "さきたま杯(Jpn1)":      { bg:"#6b2200", text:"#fed7aa", border:"#f97316" },
+  "ダービーグランプリ(当時Jpn1)": { bg:"#7c2d12", text:"#ffedd5", border:"#fb923c" },
+  "東京スプリント(Jpn1)":  { bg:"#4c0519", text:"#fecdd3", border:"#fb7185" },
+  "全日本2歳優駿(Jpn1)":   { bg:"#3b0764", text:"#f3e8ff", border:"#c084fc" },
+  "ジャパンダートクラシック(Jpn1)": { bg:"#431407", text:"#fef3c7", border:"#f97316" },
+  "東京ダービー(Jpn1)":             { bg:"#5c2000", text:"#fed7aa", border:"#fb923c" },
+  "中山グランドジャンプ":  { bg:"#0c0a09", text:"#d6d3d1", border:"#78716c" },
+  "中山大障害":            { bg:"#1c1917", text:"#e7e5e4", border:"#a8a29e" },
+  "香港C(海外)":           { bg:"#083344", text:"#a5f3fc", border:"#22d3ee" },
+  "香港スプリント(海外)":  { bg:"#164e63", text:"#cffafe", border:"#67e8f9" },
+  "香港マイル(海外)":      { bg:"#134e4a", text:"#ccfbf1", border:"#5eead4" },
+  "香港ヴァーズ(海外)":    { bg:"#0f4c5c", text:"#d1fae5", border:"#34d399" },
+  "チャンピオンズマイル(海外)": { bg:"#003d3b", text:"#99f6e4", border:"#14b8a6" },
+  "ドバイターフ(海外)":    { bg:"#312e81", text:"#e0e7ff", border:"#6366f1" },
+  "ドバイシーマクラシック(海外)": { bg:"#2e1065", text:"#f3e8ff", border:"#c084fc" },
+  "ドバイワールドC(海外)": { bg:"#3730a3", text:"#eef2ff", border:"#818cf8" },
+  "ジャック・ル・マロワ賞(海外)": { bg:"#1b4332", text:"#d1fae5", border:"#6ee7b7" },
+  "サンクルー大賞(海外)":  { bg:"#1e3a5f", text:"#dbeafe", border:"#93c5fd" },
+  "コックスプレート(海外)": { bg:"#264653", text:"#cffafe", border:"#67e8f9" },
+  "ナッソーS(海外)":       { bg:"#14532d", text:"#dcfce7", border:"#86efac" },
+  "アベイ・ド・ロンシャン賞(海外)": { bg:"#166534", text:"#dcfce7", border:"#4ade80" },
+  "ジュライC(海外)":       { bg:"#052e16", text:"#bbf7d0", border:"#22c55e" },
+  "メルボルンC(海外)":     { bg:"#1a2e05", text:"#d9f99d", border:"#84cc16" },
+  "BCクラシック(海外)":    { bg:"#0a192f", text:"#ccd6f6", border:"#8892b0" },
+  "BCフィリー&メアターフ(海外)": { bg:"#172a45", text:"#a8c0ff", border:"#6495ed" },
+  "クイーンエリザベス2世C(海外)": { bg:"#1a237e", text:"#c5cae9", border:"#7986cb" },
+  "サウジC(海外)":         { bg:"#5c2e00", text:"#fef9c3", border:"#f0a500" },
+};
+
+// ============================================================
+// RACE DISTANCES  (単位: m。障害は負の値で別扱い)
+// ============================================================
+const RACE_DIST = {
+  // ── 牡馬クラシック
+  "皐月賞":               2000,
+  "日本ダービー":          2400,
+  "菊花賞":               3000,
+  // ── 牝馬クラシック
+  "桜花賞":               1600,
+  "優駿牝馬":             2400,
+  "秋華賞":               2000,
+  "阪神JF":               1600,
+  // ── 天皇賞
+  "天皇賞(春)":           3200,
+  "天皇賞(秋)":           2000,
+  // ── グランプリ
+  "有馬記念":             2500,
+  "宝塚記念":             2200,
+  "ジャパンC":            2400,
+  // ── マイル
+  "安田記念":             1600,
+  "マイルCS":             1600,
+  "NHKマイルC":           1600,
+  "ヴィクトリアマイル":    1600,
+  // ── スプリント
+  "スプリンターズS":       1200,
+  "高松宮記念":            1200,
+  // ── 2歳
+  "朝日杯FS":             1600,
+  "ホープフルS":          2000,
+  // ── 牝馬長距離
+  "エリザベス女王杯":      2200,
+  // ── 大阪杯
+  "大阪杯":               2000,
+  // ── JRA ダート
+  "フェブラリーS":         1600,
+  "チャンピオンズC":       1800,
+  // ── 地方交流 Jpn1
+  "川崎記念(Jpn1)":        2100,
+  "帝王賞(Jpn1)":          2000,
+  "かしわ記念(Jpn1)":      1600,
+  "東京大賞典":            2000,
+  "JBCクラシック(Jpn1)":   2000,
+  "JBCスプリント(Jpn1)":   1200,
+  "JBCマイル(Jpn1)":       1600,
+  "マイルCS南部杯(Jpn1)":  1600,
+  "東京スプリント(Jpn1)":  1200,
+  "全日本2歳優駿(Jpn1)":   1600,
+  "ジャパンダートクラシック(Jpn1)": 2000,
+  "東京ダービー(Jpn1)":             2000,
+  // ── 障害（負値で識別）
+  "中山グランドジャンプ":  -4250,
+  "中山大障害":            -3450,
+  // ── 海外：香港
+  "香港C(海外)":           2000,
+  "香港スプリント(海外)":  1200,
+  "香港マイル(海外)":      1600,
+  "香港ヴァーズ(海外)":    2400,
+  "チャンピオンズマイル(海外)": 1600,
+  // ── 海外：ドバイ
+  "ドバイターフ(海外)":    1800,
+  "ドバイシーマクラシック(海外)": 2410,
+  "ドバイワールドC(海外)": 2000,
+  // ── 海外：欧州
+  "ジャック・ル・マロワ賞(海外)": 1600,
+  "サンクルー大賞(海外)":  2400,
+  "コックスプレート(海外)": 2040,
+  "ナッソーS(海外)":       1994,
+  "アベイ・ド・ロンシャン賞(海外)": 1000,
+  "ジュライC(海外)":       1200,
+  "メルボルンC(海外)":     3200,
+  "BCクラシック(海外)":    2000,
+  "BCフィリー&メアターフ(海外)": 2100,
+  "クイーンエリザベス2世C(海外)": 2000,
+  "サウジC(海外)":         1800,
+};
+
+// SMILE区分
+// S: 1000–1300  M: 1301–1899  I: 1900–2100  L: 2101–2700  E: 2701+  JG: 障害
+const SMILE_DEFS = [
+  { key:"S", label:"S スプリント",  cls:"smile-S",  min:1000, max:1300 },
+  { key:"M", label:"M マイル",      cls:"smile-M",  min:1301, max:1899 },
+  { key:"I", label:"I 中距離",      cls:"smile-I",  min:1900, max:2100 },
+  { key:"L", label:"L ロング",      cls:"smile-L",  min:2101, max:2700 },
+  { key:"E", label:"E 超長距離",    cls:"smile-E",  min:2701, max:99999 },
+];
+
+// チャンピオンズC(旧ジャパンカップダート)距離：馬名ごとに走った当時の距離を上書き
+// 2000–2007: 東京2100m / 2008–2013: 阪神1800m / 2014–: 中京1800m
+const CHAMP_C_DIST_OVERRIDE = {
+  "ウイングアロー":   2100, // 2000年 東京
+  "クロフネ":         2100, // 2001年 東京
+  "カネヒキリ":       2100, // 2005年・2008年 → 2100と1800混在 → 最短1800・最長2100
+  "アドマイヤドン":   2100, // 2006年 東京
+  "ヴァーミリアン":   2100, // 2007年 東京（2100）・2009年 阪神（1800）混在 → 最短1800・最長2100
+  "エスポワールシチー": 1800, // 2009年 阪神
+  "トランセンド":     1800, // 2010・2011年 阪神
+  "テスタマッタ":     1800, // 2010年 阪神
+  // ホッコータルマエ: 2014年 中京1800m → デフォルト1800のまま
+};
+
+// カネヒキリ・ヴァーミリアンは複数距離で勝利しているため最小距離も別管理
+const CHAMP_C_DIST_MIN_OVERRIDE = {
+  "カネヒキリ":  1800, // 2008年阪神1800mも含む
+  "ヴァーミリアン": 1800, // 2009年阪神1800mも含む
+};
+
+function getDistInfo(combo, horseName) {
+  const parts = combo.split('＋');
+  let minD = Infinity, maxD = -Infinity, hasJump = false;
+  parts.forEach(part => {
+    const m = part.match(/^(.+?)(×\d+)?$/);
+    const name = m ? m[1].trim() : part;
+    let d = RACE_DIST[name];
+    if (d === undefined) return;
+    if (d < 0) { hasJump = true; return; }
+    // チャンピオンズCは馬名別距離で上書き
+    if (name === "チャンピオンズC" && horseName && CHAMP_C_DIST_OVERRIDE[horseName] !== undefined) {
+      const overMax = CHAMP_C_DIST_OVERRIDE[horseName];
+      const overMin = CHAMP_C_DIST_MIN_OVERRIDE[horseName] ?? overMax;
+      if (overMin < minD) minD = overMin;
+      if (overMax > maxD) maxD = overMax;
+      return;
+    }
+    if (d < minD) minD = d;
+    if (d > maxD) maxD = d;
+  });
+  return { minD: isFinite(minD) ? minD : null, maxD: isFinite(maxD) ? maxD : null, hasJump };
+}
+
+function getSmileBadges(minD, maxD, hasJump) {
+  const result = [];
+  if (hasJump) result.push({ key:"JG", label:"JG 障害", cls:"smile-JG" });
+  if (minD === null) return result;
+  SMILE_DEFS.forEach(def => {
+    if (maxD >= def.min && minD <= def.max) result.push(def);
+  });
+  return result;
+}
+
+// 馬名→URLマップ（グローバル）
+const horseUrlMap = {};
+HORSES.forEach(h => { if (h.url) horseUrlMap[h.name] = h.url; });
+
+// 距離バー用パラメータ (表示範囲 1000–3500m)
+const BAR_MIN = 1000, BAR_MAX = 3500;
+const SMILE_GRADIENT = `linear-gradient(to right,
+  #d97706 0%, #d97706 ${(1300-BAR_MIN)/(BAR_MAX-BAR_MIN)*100}%,
+  #0369a1 ${(1300-BAR_MIN)/(BAR_MAX-BAR_MIN)*100}%, #0369a1 ${(1899-BAR_MIN)/(BAR_MAX-BAR_MIN)*100}%,
+  #059669 ${(1899-BAR_MIN)/(BAR_MAX-BAR_MIN)*100}%, #059669 ${(2100-BAR_MIN)/(BAR_MAX-BAR_MIN)*100}%,
+  #7c3aed ${(2100-BAR_MIN)/(BAR_MAX-BAR_MIN)*100}%, #7c3aed ${(2700-BAR_MIN)/(BAR_MAX-BAR_MIN)*100}%,
+  #a21caf ${(2700-BAR_MIN)/(BAR_MAX-BAR_MIN)*100}%, #a21caf 100%)`;
+
+function renderDistCell(combo, horseName) {
+  const { minD, maxD, hasJump } = getDistInfo(combo, horseName);
+  const badges = getSmileBadges(minD, maxD, hasJump);
+
+  let barHtml = '';
+  if (minD !== null) {
+    const leftPct  = Math.max(0, Math.min(100, (minD - BAR_MIN) / (BAR_MAX - BAR_MIN) * 100));
+    const rightPct = Math.max(0, Math.min(100, (maxD - BAR_MIN) / (BAR_MAX - BAR_MIN) * 100));
+    const widthPct = Math.max(1, rightPct - leftPct);
+    const label = minD === maxD ? `${minD}m` : `${minD}–${maxD}m`;
+    barHtml = `
+      <div class="dist-range-label"><strong>${label}</strong></div>
+      <div class="dist-bar-track">
+        <div class="dist-bar-fill" style="left:${leftPct}%;width:${widthPct}%;background:${SMILE_GRADIENT};opacity:0.85"></div>
+      </div>`;
+  } else if (hasJump) {
+    barHtml = `<div class="dist-range-label" style="margin-bottom:7px"><strong>障害コース</strong></div>`;
+  }
+
+  const badgeHtml = badges.length
+    ? `<div class="smile-badges">${badges.map(b => `<span class="smile-badge ${b.cls}">${b.label}</span>`).join('')}</div>`
+    : '';
+
+  return `<td class="dist-cell">${barHtml}${badgeHtml}</td>`;
+}
+
+// ============================================================
+// BUILD COMBOS
+// ============================================================
+function buildCombos(horses) {
+  const map = {};
+  horses.forEach(h => {
+    const key = h.combo;
+    if (!map[key]) map[key] = { combo: h.combo, wins: h.wins, cat: h.cat, note: h.note || "", horses: [] };
+    map[key].horses.push(h.name);
+    if (h.wins > map[key].wins) map[key].wins = h.wins;
+  });
+  const catOrder = { "芝":0, "混合":1, "ダート":2, "障害":3 };
+  return Object.values(map).sort((a, b) =>
+    (catOrder[a.cat] ?? 9) - (catOrder[b.cat] ?? 9) || b.wins - a.wins || a.combo.localeCompare(b.combo, "ja")
+  );
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderChips(combo) {
+  return combo.split('＋').map(part => {
+    const m = part.match(/^(.+?)(×\d+)?$/);
+    const name = m ? m[1].trim() : part;
+    const times = m && m[2] ? m[2] : "";
+    const rc = RACE_COLOR[name] || { bg:"#21262d", text:"#c9d1d9", border:"#30363d" };
+    return `<span class="race-chip" style="background:${rc.bg};color:${rc.text};border:1px solid ${rc.border}">${name}${times ? `<span class="times">${times}</span>` : ''}</span>`;
+  }).join('');
+}
+
+function renderCards(combos) {
+  const cardList = document.getElementById('cardList');
+  if (!cardList) return;
+  cardList.innerHTML = combos.map(c => {
+    const cs = CAT_STYLE[c.cat] || CAT_STYLE["芝"];
+    const wb = winBadge(c.wins);
+    const cnt = c.horses.length;
+    const cntStyle = cnt >= 3
+      ? "background:#7c2d12;border:1px solid #ea580c;color:#fb923c"
+      : cnt === 2
+      ? "background:#1e3a5f;border:1px solid #3b82f6;color:#60a5fa"
+      : "background:transparent;border:1px solid #30363d;color:#8b949e";
+
+
+  const chipsHtml = c.combo.split('＋').map(part => {
+      const m = part.match(/^(.+?)(×\d+)?$/);
+      const name = m ? m[1].trim() : part;
+      const times = m && m[2] ? m[2] : "";
+      const rc = RACE_COLOR[name] || { bg:"#21262d", text:"#c9d1d9", border:"#30363d" };
+      return `<span class="card-chip" style="background:${rc.bg};color:${rc.text};border:1px solid ${rc.border}">${name}${times ? `<span class="times">${times}</span>` : ''}</span>`;
+    }).join('');
+    const { minD, maxD, hasJump } = getDistInfo(c.combo, c.horses[0]);
+    const badges = getSmileBadges(minD, maxD, hasJump);
+    let distHtml = '';
+    if (minD !== null) {
+      const leftPct  = Math.max(0, Math.min(100, (minD - BAR_MIN) / (BAR_MAX - BAR_MIN) * 100));
+      const rightPct = Math.max(0, Math.min(100, (maxD - BAR_MIN) / (BAR_MAX - BAR_MIN) * 100));
+      const widthPct = Math.max(1, rightPct - leftPct);
+      const label = minD === maxD ? `${minD}m` : `${minD}–${maxD}m`;
+      distHtml = `<div class="dist-range-label"><strong>${label}</strong></div><div class="dist-bar-track"><div class="dist-bar-fill" style="left:${leftPct}%;width:${widthPct}%;background:${SMILE_GRADIENT};opacity:0.85"></div></div>`;
+    } else if (hasJump) {
+      distHtml = `<div class="dist-range-label"><strong>障害コース</strong></div>`;
+    }
+    const badgesHtml = badges.length
+      ? `<div class="smile-badges">${badges.map(b => `<span class="smile-badge ${b.cls}">${b.label}</span>`).join('')}</div>`
+      : '';
+    const horseChipsHtml = c.horses.map(n => {
+      const url = horseUrlMap[n] || `https://db.netkeiba.com/horse/search/?word=${encodeURIComponent(n)}`;
+      return `<a href="${url}" target="_blank" rel="noopener" class="card-horse-name-chip horse-link">${n}</a>`;
+    }
+    ).join('');
+    return `<div class="horse-card">
+      <div class="card-top">
+        <span class="card-win-badge" style="background:${wb.bg};box-shadow:0 0 0 2px ${wb.border},0 2px 8px rgba(0,0,0,.5);color:${wb.text};font-size:13px">${c.wins}<span style="font-size:9px;opacity:0.85;margin-left:1px">勝</span></span>
+        <span class="card-cat-badge" style="background:${cs.bg};color:${cs.text};border:1px solid ${cs.border}">${c.cat}</span>
+        <span class="card-count-badge" style="${cntStyle}">${cnt}<span style="font-size:9px;opacity:0.85;margin-left:1px">頭</span></span>
+        <div class="card-horse-names">${horseChipsHtml}</div>
+      </div>
+      <div class="card-chips">${chipsHtml}</div>
+      ${(distHtml || badgesHtml) ? `<div class="card-dist">${distHtml}${badgesHtml}</div>` : ''}
+      ${c.note ? `<div class="card-note">※${c.note}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderTable(combos) {
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('emptyMsg');
+  document.getElementById('countBadge').textContent = combos.length + '件';
+
+  renderCards(combos);
+
+  if (combos.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = combos.map(c => {
+    const cs = CAT_STYLE[c.cat] || CAT_STYLE["芝"];
+    const wb = winBadge(c.wins);
+    const cnt = c.horses.length;
+    const cntStyle = cnt >= 3
+      ? `background:#7c2d12;border:1px solid #ea580c;color:#fb923c`
+      : cnt === 2
+      ? `background:#1e3a5f;border:1px solid #3b82f6;color:#60a5fa`
+      : `background:transparent;border:1px solid #30363d;color:#8b949e`;
+
+    return `<tr>
+      <td><span class="win-badge" style="background:${wb.bg};box-shadow:0 0 0 2px ${wb.border},0 2px 8px rgba(0,0,0,.5);color:${wb.text};font-size:13px">${c.wins}<span style="font-size:10px;opacity:0.85;margin-left:1px">勝</span></span></td>
+      <td><span class="cat-badge" style="background:${cs.bg};color:${cs.text};border:1px solid ${cs.border}">${c.cat}</span></td>
+      <td class="combo-cell">
+        <div class="combo-chips">${renderChips(c.combo)}</div>
+        ${c.note ? `<div class="note-text">※${c.note}</div>` : ''}
+      </td>
+      <td class="horses-cell"><div class="horse-chips-wrap">${c.horses.map(n => { const u = horseUrlMap[n] || `https://db.netkeiba.com/horse/search/?word=${encodeURIComponent(n)}`; return `<a href="${u}" target="_blank" rel="noopener" class="horse-link">${n}</a>`; }).join('')}</div></td>
+      ${renderDistCell(c.combo, c.horses[0])}
+      <td class="count-td"><span class="count-badge" style="${cntStyle}">${cnt}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// FILTER STATE
+// ============================================================
+let currentCat = "全て";
+let selectedWins = new Set([2,3,4,5,6,7,9,10,11]); // 初期状態：全選択
+let currentQ = "";
+let sortOrder = "asc"; // "asc" or "desc"
+
+function applyFilter() {
+  const combos = buildCombos(HORSES);
+  const filtered = combos.filter(c => {
+    if (currentCat !== "全て" && c.cat !== currentCat) return false;
+    if (!selectedWins.has(c.wins)) return false;
+    if (currentQ) {
+      const s = currentQ.trim();
+      return c.combo.includes(s) || c.horses.some(n => n.includes(s)) || c.note.includes(s);
+    }
+    return true;
+  });
+  filtered.sort((a, b) => sortOrder === "asc" ? a.wins - b.wins : b.wins - a.wins);
+  renderTable(filtered);
+}
+
+// ── Cat buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = btn.dataset.cat;
+    applyFilter();
+  });
+});
+
+// ── Win buttons（マルチセレクト）
+document.querySelectorAll('.win-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const w = parseInt(btn.dataset.w);
+    if (selectedWins.has(w)) {
+      // 最後の1つは外せない
+      if (selectedWins.size > 1) {
+        selectedWins.delete(w);
+        btn.classList.remove('active');
+      }
+    } else {
+      selectedWins.add(w);
+      btn.classList.add('active');
+    }
+    applyFilter();
+  });
+});
+
+// ── Search
+document.getElementById('searchInput').addEventListener('input', e => {
+  currentQ = e.target.value;
+  applyFilter();
+});
+
+// ── 全選択・全解除
+const ALL_WINS = [2,3,4,5,6,7,9,10,11];
+document.getElementById('btnSelectAll').addEventListener('click', () => {
+  ALL_WINS.forEach(w => {
+    selectedWins.add(w);
+    document.querySelector(`.win-btn[data-w="${w}"]`).classList.add('active');
+  });
+  applyFilter();
+});
+document.getElementById('btnClearAll').addEventListener('click', () => {
+  // 最後の1つを残す仕様に合わせ、全解除は最小値(2)だけ残す
+  ALL_WINS.forEach(w => {
+    if (w === 2) {
+      selectedWins.add(w);
+      document.querySelector(`.win-btn[data-w="${w}"]`).classList.add('active');
+    } else {
+      selectedWins.delete(w);
+      document.querySelector(`.win-btn[data-w="${w}"]`).classList.remove('active');
+    }
+  });
+  applyFilter();
+});
+
+// ── Sort
+document.getElementById('btnSort').addEventListener('click', () => {
+  sortOrder = sortOrder === "asc" ? "desc" : "asc";
+  document.getElementById('btnSort').textContent = sortOrder === "asc" ? "勝数 ↑ 昇順" : "勝数 ↓ 降順";
+  applyFilter();
+});
+
+// ── Initial render
+applyFilter();
+</script>
+</body>
+</html>
