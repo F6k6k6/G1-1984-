@@ -162,16 +162,18 @@
     transition: all 0.15s;
     white-space: nowrap;
   }
-  .smile-filter-btn.active {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-  .smile-filter-btn.smile-S.active  { background:#1c1505; color:#fbbf24; border-color:#d97706; }
-  .smile-filter-btn.smile-M.active  { background:#0c1a3a; color:#7dd3fc; border-color:#0369a1; }
-  .smile-filter-btn.smile-I.active  { background:#0d2d1a; color:#6ee7b7; border-color:#059669; }
-  .smile-filter-btn.smile-L.active  { background:#2a0d3a; color:#d8b4fe; border-color:#7c3aed; }
-  .smile-filter-btn.smile-E.active  { background:#1f1230; color:#f0abfc; border-color:#a21caf; }
-  .smile-filter-btn.smile-JG.active { background:#0c0a09; color:#d6d3d1; border-color:#78716c; }
+  .smile-filter-btn.smile-S,
+  .smile-filter-btn.smile-M,
+  .smile-filter-btn.smile-I,
+  .smile-filter-btn.smile-L,
+  .smile-filter-btn.smile-E,
+  .smile-filter-btn.smile-JG { background: transparent !important; color: var(--text-muted) !important; border-color: var(--border2) !important; }
+  .smile-filter-btn.smile-S.active  { background:#1c1505 !important; color:#fbbf24 !important; border-color:#d97706 !important; }
+  .smile-filter-btn.smile-M.active  { background:#0c1a3a !important; color:#7dd3fc !important; border-color:#0369a1 !important; }
+  .smile-filter-btn.smile-I.active  { background:#0d2d1a !important; color:#6ee7b7 !important; border-color:#059669 !important; }
+  .smile-filter-btn.smile-L.active  { background:#2a0d3a !important; color:#d8b4fe !important; border-color:#7c3aed !important; }
+  .smile-filter-btn.smile-E.active  { background:#1f1230 !important; color:#f0abfc !important; border-color:#a21caf !important; }
+  .smile-filter-btn.smile-JG.active { background:#0c0a09 !important; color:#d6d3d1 !important; border-color:#78716c !important; }
   #distInput {
     width: 140px;
     padding: 4px 10px;
@@ -696,14 +698,15 @@
     <div class="smile-filter-row">
       <span class="win-label">距離区分：</span>
       <div class="smile-filter-btns">
-        <button class="smile-filter-btn active" data-smile="全て">全て</button>
-        <button class="smile-filter-btn smile-S" data-smile="S">S</button>
-        <button class="smile-filter-btn smile-M" data-smile="M">M</button>
-        <button class="smile-filter-btn smile-I" data-smile="I">I</button>
-        <button class="smile-filter-btn smile-L" data-smile="L">L</button>
-        <button class="smile-filter-btn smile-E" data-smile="E">E</button>
-        <button class="smile-filter-btn smile-JG" data-smile="JG">JG</button>
+        <button class="smile-filter-btn smile-S active" data-smile="S">S</button>
+        <button class="smile-filter-btn smile-M active" data-smile="M">M</button>
+        <button class="smile-filter-btn smile-I active" data-smile="I">I</button>
+        <button class="smile-filter-btn smile-L active" data-smile="L">L</button>
+        <button class="smile-filter-btn smile-E active" data-smile="E">E</button>
+        <button class="smile-filter-btn smile-JG active" data-smile="JG">JG</button>
       </div>
+      <button class="sel-btn" id="btnSmileAll">全選択</button>
+      <button class="sel-btn" id="btnSmileClear">全解除</button>
       <input id="distInput" type="number" placeholder="距離(m)を入力…" min="1000" max="9999">
     </div>
   </div>
@@ -1363,7 +1366,7 @@ let currentCat = "全て";
 let selectedWins = new Set([2,3,4,5,6,7,9,10,11]); // 初期状態：全選択
 let currentQ = "";
 let sortOrder = "desc"; // "asc" or "desc"
-let currentSmile = "全て"; // SMILE区分フィルター
+let currentSmile = new Set(["S","M","I","L","E","JG"]); // 初期状態：全選択
 let currentDist = null;   // 距離数値フィルター
 
 function applyFilter() {
@@ -1375,15 +1378,12 @@ function applyFilter() {
       const s = currentQ.trim();
       if (!c.combo.includes(s) && !c.horses.some(n => n.includes(s)) && !c.note.includes(s)) return false;
     }
-    // SMILE区分フィルター
-    if (currentSmile !== "全て") {
+    // SMILE区分フィルター（マルチセレクト）
+    if (currentSmile.size < 6) { // 全選択でなければ絞り込む
       const { minD, maxD, hasJump } = getDistInfo(c.combo, c.horses[0]);
-      if (currentSmile === "JG") {
-        if (!hasJump) return false;
-      } else {
-        const def = SMILE_DEFS.find(d => d.key === currentSmile);
-        if (!def || minD === null || !(maxD >= def.min && minD <= def.max)) return false;
-      }
+      const badges = getSmileBadges(minD, maxD, hasJump);
+      const keys = badges.map(b => b.key);
+      if (!keys.some(k => currentSmile.has(k))) return false;
     }
     // 距離数値フィルター
     if (currentDist !== null) {
@@ -1461,14 +1461,41 @@ document.getElementById('btnSort').addEventListener('click', () => {
   applyFilter();
 });
 
-// ── SMILE filter
+// ── SMILE filter（マルチセレクト）
+const ALL_SMILES = ["S","M","I","L","E","JG"];
 document.querySelectorAll('.smile-filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.smile-filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentSmile = btn.dataset.smile;
+    const k = btn.dataset.smile;
+    if (currentSmile.has(k)) {
+      if (currentSmile.size > 1) {
+        currentSmile.delete(k);
+        btn.classList.remove('active');
+      }
+    } else {
+      currentSmile.add(k);
+      btn.classList.add('active');
+    }
     applyFilter();
   });
+});
+document.getElementById('btnSmileAll').addEventListener('click', () => {
+  ALL_SMILES.forEach(k => {
+    currentSmile.add(k);
+    document.querySelector(`.smile-filter-btn[data-smile="${k}"]`).classList.add('active');
+  });
+  applyFilter();
+});
+document.getElementById('btnSmileClear').addEventListener('click', () => {
+  ALL_SMILES.forEach(k => {
+    if (k === "S") {
+      currentSmile.add(k);
+      document.querySelector(`.smile-filter-btn[data-smile="${k}"]`).classList.add('active');
+    } else {
+      currentSmile.delete(k);
+      document.querySelector(`.smile-filter-btn[data-smile="${k}"]`).classList.remove('active');
+    }
+  });
+  applyFilter();
 });
 
 // ── Distance input
