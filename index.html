@@ -138,6 +138,54 @@
     background: #2d2200;
     color: var(--gold);
   }
+  .smile-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .smile-filter-btns {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .smile-filter-btn {
+    padding: 4px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .smile-filter-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .smile-filter-btn.smile-S.active  { background:#1c1505; color:#fbbf24; border-color:#d97706; }
+  .smile-filter-btn.smile-M.active  { background:#0c1a3a; color:#7dd3fc; border-color:#0369a1; }
+  .smile-filter-btn.smile-I.active  { background:#0d2d1a; color:#6ee7b7; border-color:#059669; }
+  .smile-filter-btn.smile-L.active  { background:#2a0d3a; color:#d8b4fe; border-color:#7c3aed; }
+  .smile-filter-btn.smile-E.active  { background:#1f1230; color:#f0abfc; border-color:#a21caf; }
+  .smile-filter-btn.smile-JG.active { background:#0c0a09; color:#d6d3d1; border-color:#78716c; }
+  #distInput {
+    width: 140px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 12px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  #distInput:focus { border-color: var(--gold); }
+  #distInput::placeholder { color: var(--text-muted); }
   .win-row {
     display: flex;
     align-items: center;
@@ -441,6 +489,10 @@
     .filter-btn:hover { border-color: var(--border2); color: var(--text-muted); }
     .filter-btn.active:hover { border-color: var(--gold); color: var(--gold); }
     #countBadge { font-size: 11px; }
+    .smile-filter-row { gap: 6px; }
+    .smile-filter-btn { padding: 3px 8px; font-size: 11px; }
+    #distInput { width: 120px; font-size: 12px; }
+    .smile-filter-btn:hover { border-color: var(--border2); color: var(--text-muted); }
 
     /* ── テーブルを非表示、カードを表示 ── */
     #tableWrap { padding: 10px 10px 60px; }
@@ -638,8 +690,21 @@
     <div class="sel-row">
       <button class="sel-btn" id="btnSelectAll">全選択</button>
       <button class="sel-btn" id="btnClearAll">全解除</button>
-      <button class="sel-btn" id="btnSort">勝数 ↑ 昇順</button>
+      <button class="sel-btn" id="btnSort">勝数 ↓ 降順</button>
       <span id="countBadge">0件</span>
+    </div>
+    <div class="smile-filter-row">
+      <span class="win-label">距離区分：</span>
+      <div class="smile-filter-btns">
+        <button class="smile-filter-btn active" data-smile="全て">全て</button>
+        <button class="smile-filter-btn smile-S" data-smile="S">S</button>
+        <button class="smile-filter-btn smile-M" data-smile="M">M</button>
+        <button class="smile-filter-btn smile-I" data-smile="I">I</button>
+        <button class="smile-filter-btn smile-L" data-smile="L">L</button>
+        <button class="smile-filter-btn smile-E" data-smile="E">E</button>
+        <button class="smile-filter-btn smile-JG" data-smile="JG">JG</button>
+      </div>
+      <input id="distInput" type="number" placeholder="距離(m)を入力…" min="1000" max="9999">
     </div>
   </div>
 </div>
@@ -1297,7 +1362,9 @@ function renderTable(combos) {
 let currentCat = "全て";
 let selectedWins = new Set([2,3,4,5,6,7,9,10,11]); // 初期状態：全選択
 let currentQ = "";
-let sortOrder = "asc"; // "asc" or "desc"
+let sortOrder = "desc"; // "asc" or "desc"
+let currentSmile = "全て"; // SMILE区分フィルター
+let currentDist = null;   // 距離数値フィルター
 
 function applyFilter() {
   const combos = buildCombos(HORSES);
@@ -1306,7 +1373,23 @@ function applyFilter() {
     if (!selectedWins.has(c.wins)) return false;
     if (currentQ) {
       const s = currentQ.trim();
-      return c.combo.includes(s) || c.horses.some(n => n.includes(s)) || c.note.includes(s);
+      if (!c.combo.includes(s) && !c.horses.some(n => n.includes(s)) && !c.note.includes(s)) return false;
+    }
+    // SMILE区分フィルター
+    if (currentSmile !== "全て") {
+      const { minD, maxD, hasJump } = getDistInfo(c.combo, c.horses[0]);
+      if (currentSmile === "JG") {
+        if (!hasJump) return false;
+      } else {
+        const def = SMILE_DEFS.find(d => d.key === currentSmile);
+        if (!def || minD === null || !(maxD >= def.min && minD <= def.max)) return false;
+      }
+    }
+    // 距離数値フィルター
+    if (currentDist !== null) {
+      const { minD, maxD, hasJump } = getDistInfo(c.combo, c.horses[0]);
+      if (minD === null) return false;
+      if (currentDist < minD || currentDist > maxD) return false;
     }
     return true;
   });
@@ -1375,6 +1458,23 @@ document.getElementById('btnClearAll').addEventListener('click', () => {
 document.getElementById('btnSort').addEventListener('click', () => {
   sortOrder = sortOrder === "asc" ? "desc" : "asc";
   document.getElementById('btnSort').textContent = sortOrder === "asc" ? "勝数 ↑ 昇順" : "勝数 ↓ 降順";
+  applyFilter();
+});
+
+// ── SMILE filter
+document.querySelectorAll('.smile-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.smile-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSmile = btn.dataset.smile;
+    applyFilter();
+  });
+});
+
+// ── Distance input
+document.getElementById('distInput').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  currentDist = (e.target.value !== '' && !isNaN(v)) ? v : null;
   applyFilter();
 });
 
