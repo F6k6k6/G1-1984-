@@ -292,6 +292,10 @@
     cursor: pointer;
     transition: opacity 0.15s;
     white-space: nowrap;
+    justify-content: center;
+  }
+  .horses-cell .horse-link.has-crown {
+    padding-left: 3px;
   }
   .horse-link:hover {
     opacity: 0.7;
@@ -351,7 +355,7 @@
     border: 1px solid rgba(240,198,96,0.5);
     border-left: 3px solid var(--gold);
     border-radius: 4px;
-    padding: 5px 10px 5px 3px;
+    padding: 5px 10px 5px 10px;
     color: #f5ecd0;
     font-size: 13px;
     font-weight: 700;
@@ -556,6 +560,12 @@
       display: none; /* Chrome/Safari */
     }
     .card-horse-name-chip {
+      justify-content: center;
+    }
+    .card-horse-name-chip.has-crown {
+      padding-left: 3px;
+    }
+    .card-horse-name-chip {
       display: inline-flex;
       align-items: center;
       flex-shrink: 0;
@@ -564,7 +574,7 @@
       border: 1px solid rgba(240,198,96,0.5);
       border-left: 3px solid var(--gold);
       border-radius: 4px;
-      padding: 5px 10px 5px 3px;
+      padding: 5px 10px 5px 10px;
       color: #f5ecd0;
       font-size: 13px;
       font-weight: 700;
@@ -1329,7 +1339,8 @@ function renderCards(combos) {
       : '';
     const horseChipsHtml = c.horses.map(n => {
       const url = horseUrlMap[n] || `https://db.netkeiba.com/horse/search/?word=${encodeURIComponent(n)}`;
-      return `<a href="${url}" target="_blank" rel="noopener" class="card-horse-name-chip horse-link">${crownPrefix(n)}${n}</a>`;
+      const hasCrown = TRIPLE_CROWN_MALE.has(n) || TRIPLE_CROWN_FEMALE.has(n);
+      return `<a href="${url}" target="_blank" rel="noopener" class="card-horse-name-chip horse-link${hasCrown ? ' has-crown' : ''}">${crownPrefix(n)}${n}</a>`;
     }
     ).join('');
     return `<div class="horse-card">
@@ -1381,7 +1392,7 @@ function renderTable(combos) {
         <div class="combo-chips">${renderChips(c.combo)}</div>
         ${c.note ? `<div class="note-text">※${c.note}</div>` : ''}
       </td>
-      <td class="horses-cell"><div class="horse-chips-wrap">${c.horses.map(n => { const u = horseUrlMap[n] || `https://db.netkeiba.com/horse/search/?word=${encodeURIComponent(n)}`; return `<a href="${u}" target="_blank" rel="noopener" class="horse-link">${crownPrefix(n)}${n}</a>`; }).join('')}</div></td>
+      <td class="horses-cell"><div class="horse-chips-wrap">${c.horses.map(n => { const u = horseUrlMap[n] || `https://db.netkeiba.com/horse/search/?word=${encodeURIComponent(n)}`; return `<a href="${u}" target="_blank" rel="noopener" class="horse-link${TRIPLE_CROWN_MALE.has(n)||TRIPLE_CROWN_FEMALE.has(n)?' has-crown':''}">${crownPrefix(n)}${n}</a>`; }).join('')}</div></td>
       ${renderDistCell(c.combo, c.horses[0])}
       <td class="count-td"><span class="count-badge" style="${cntStyle}">${cnt}</span></td>
     </tr>`;
