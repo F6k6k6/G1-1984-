@@ -433,6 +433,8 @@
     color: #d4c090;
     font-weight: 700;
     font-size: 12px;
+    border-bottom: none;
+    text-decoration: none;
   }
   .dist-bar-track {
     position: relative;
@@ -641,6 +643,7 @@
       margin: 8px 0 6px;
     }
     .card-dist .dist-range-label { font-size: 11px; margin-bottom: 4px; }
+    .card-dist .dist-range-label strong { border-bottom: none; text-decoration: none; }
     .card-dist .dist-bar-track { height: 5px; }
     .card-dist .smile-badges { margin-top: 5px; gap: 4px; }
     .card-dist .smile-badge { font-size: 10px; padding: 2px 6px; }
@@ -1101,6 +1104,7 @@ const RACE_COLOR = {
   "サウジC(海外)":         { bg:"#5c2e00", text:"#fef9c3", border:"#f0a500" },
   "イスパーン賞(海外)":    { bg:"#1a1040", text:"#c4b5fd", border:"#7c3aed" },
   "アメリカンオークスS(海外)": { bg:"#0d2b1a", text:"#86efac", border:"#16a34a" },
+  "モーリスドゲスト賞(海外)": { bg:"#2d1b00", text:"#fde68a", border:"#d97706" },
 };
 
 // ============================================================
@@ -1182,6 +1186,7 @@ const RACE_DIST = {
   "サウジC(海外)":         1800,
   "イスパーン賞(海外)":    1800,
   "アメリカンオークスS(海外)": 2400,
+  "モーリスドゲスト賞(海外)": 1300,
 };
 
 // SMILE区分
@@ -1378,8 +1383,7 @@ function renderCards(combos) {
       const rightPct = Math.max(0, Math.min(100, (maxD - BAR_MIN) / (BAR_MAX - BAR_MIN) * 100));
       const widthPct = Math.max(1, rightPct - leftPct);
       const label = minD === maxD ? `${minD}m` : `${minD}–${maxD}m`;
-      const labelStyle = '';
-      distHtml = `<div class="dist-range-label"><strong${labelStyle}>${label}</strong></div><div class="dist-bar-track"><div class="dist-bar-fill" style="left:${leftPct}%;width:${widthPct}%;background:${SMILE_GRADIENT};opacity:0.85"></div></div>`;
+      distHtml = `<div class="dist-range-label"><strong>${label}</strong></div><div class="dist-bar-track"><div class="dist-bar-fill" style="left:${leftPct}%;width:${widthPct}%;background:${SMILE_GRADIENT};opacity:0.85"></div></div>`;
     } else if (hasJump) {
       distHtml = `<div class="dist-range-label"><strong>障害コース</strong></div>`;
     }
