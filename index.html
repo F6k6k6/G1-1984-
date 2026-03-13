@@ -1378,7 +1378,7 @@ function renderCards(combos) {
       const rightPct = Math.max(0, Math.min(100, (maxD - BAR_MIN) / (BAR_MAX - BAR_MIN) * 100));
       const widthPct = Math.max(1, rightPct - leftPct);
       const label = minD === maxD ? `${minD}m` : `${minD}–${maxD}m`;
-      const labelStyle = minD !== maxD ? ' style="border-bottom:1px solid #d4c090;padding-bottom:2px;"' : '';
+      const labelStyle = '';
       distHtml = `<div class="dist-range-label"><strong${labelStyle}>${label}</strong></div><div class="dist-bar-track"><div class="dist-bar-fill" style="left:${leftPct}%;width:${widthPct}%;background:${SMILE_GRADIENT};opacity:0.85"></div></div>`;
     } else if (hasJump) {
       distHtml = `<div class="dist-range-label"><strong>障害コース</strong></div>`;
