@@ -429,7 +429,7 @@
     margin-bottom: 5px;
     letter-spacing: 0.04em;
   }
-  .dist-range-label strong {
+  .dist-range-label span {
     color: #d4c090;
     font-weight: 700;
     font-size: 12px;
@@ -643,7 +643,7 @@
       margin: 8px 0 6px;
     }
     .card-dist .dist-range-label { font-size: 11px; margin-bottom: 4px; }
-    .card-dist .dist-range-label strong { border-bottom: none; text-decoration: none; }
+    .card-dist .dist-range-label span { border-bottom: none; text-decoration: none; }
     .card-dist .dist-bar-track { height: 5px; }
     .card-dist .smile-badges { margin-top: 5px; gap: 4px; }
     .card-dist .smile-badge { font-size: 10px; padding: 2px 6px; }
@@ -1299,12 +1299,12 @@ function renderDistCell(combo, horseName) {
     const widthPct = Math.max(1, rightPct - leftPct);
     const label = minD === maxD ? `${minD}m` : `${minD}–${maxD}m`;
     barHtml = `
-      <div class="dist-range-label"><strong>${label}</strong></div>
+      <div class="dist-range-label"><span>${label}</span></div>
       <div class="dist-bar-track">
         <div class="dist-bar-fill" style="left:${leftPct}%;width:${widthPct}%;background:${SMILE_GRADIENT};opacity:0.85"></div>
       </div>`;
   } else if (hasJump) {
-    barHtml = `<div class="dist-range-label" style="margin-bottom:7px"><strong>障害コース</strong></div>`;
+    barHtml = `<div class="dist-range-label" style="margin-bottom:7px"><span>障害コース</span></div>`;
   }
 
   const badgeHtml = badges.length
@@ -1383,9 +1383,9 @@ function renderCards(combos) {
       const rightPct = Math.max(0, Math.min(100, (maxD - BAR_MIN) / (BAR_MAX - BAR_MIN) * 100));
       const widthPct = Math.max(1, rightPct - leftPct);
       const label = minD === maxD ? `${minD}m` : `${minD}–${maxD}m`;
-      distHtml = `<div class="dist-range-label"><strong>${label}</strong></div><div class="dist-bar-track"><div class="dist-bar-fill" style="left:${leftPct}%;width:${widthPct}%;background:${SMILE_GRADIENT};opacity:0.85"></div></div>`;
+      distHtml = `<div class="dist-range-label"><span>${label}</span></div><div class="dist-bar-track"><div class="dist-bar-fill" style="left:${leftPct}%;width:${widthPct}%;background:${SMILE_GRADIENT};opacity:0.85"></div></div>`;
     } else if (hasJump) {
-      distHtml = `<div class="dist-range-label"><strong>障害コース</strong></div>`;
+      distHtml = `<div class="dist-range-label"><span>障害コース</span></div>`;
     }
     const badgesHtml = badges.length
       ? `<div class="smile-badges">${badges.map(b => `<span class="smile-badge ${b.cls}">${b.label}</span>`).join('')}</div>`
