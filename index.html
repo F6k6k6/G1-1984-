@@ -676,7 +676,7 @@
     <div class="header-title-row">
       <div class="header-accent"></div>
       <div>
-        <div class="header-sub">JAPAN GRADED RACING 1983–2025</div>
+        <div class="header-sub">JAPAN GRADED RACING 1983–2026</div>
         <h1 class="header-main">複数G1勝利馬 ── 勝鞍の組み合わせ完全一覧</h1>
       </div>
     </div>
@@ -765,9 +765,10 @@
     <h3>凡例・補足</h3>
     <ul>
       <li>「×N」は同一レースをN回制覇（連覇または年を置いた複数回勝利）</li>
-      <li>G1の対象：JRA G1 / Jpn1（地方交流G1級）/ JG1（障害G1）/ 国際G1（海外）＝ 1984年グレード制導入以降</li>
+      <li>G1の対象：JRA G1 / Jpn1（地方交流G1級）/ JG1（障害G1）/ 国際G1（海外）＝ 1984年グレード制導入以降<br>
+        <span style="font-size:0.9em;color:#94a3b8">※ミスターシービーのみ1983年（グレード制導入前年）の牡馬三冠のため例外的に収録</span></li>
       <li>地方交流Jpn1は「(Jpn1)」、海外G1は「(海外)」と付記</li>
-      <li>同一組み合わせを複数馬が達成した場合は「頭数」欄に計上（橙：3頭以上、青：2頭）</li>
+      <li>同一組み合わせを複数馬が達成した場合は「頭数」欄に計上（青：2頭、緑：3頭、橙：4頭、紫：5頭、黄：6〜7頭、赤：8頭以上）</li>
       <li>【距離適性】勝利したG1レースの最短〜最長距離を表示。距離区分はSMILE国際基準に準拠：
         <b style="color:#fbbf24">S スプリント</b>（〜1300m）・
         <b style="color:#7dd3fc">M マイル</b>（1301〜1899m）・
@@ -835,7 +836,7 @@ const HORSES = [
   { name:"ミスターシービー", url:"https://db.netkeiba.com/horse/1980107022/", wins:4, cat:"芝", combo:"皐月賞＋日本ダービー＋菊花賞＋天皇賞(秋)", note:"皐月賞(83)→日本ダービー(83)→菊花賞(83)→天皇賞(秋)(84)。シンボリルドルフと同世代の三冠馬" },
   // 芝3
   { name:"ビワハヤヒデ", url:"https://db.netkeiba.com/horse/1990103355/", wins:3, cat:"芝", combo:"菊花賞＋天皇賞(春)＋宝塚記念" },
-  { name:"マヤノトップガン", url:"https://db.netkeiba.com/horse/1992102988/", wins:3, cat:"芝", combo:"菊花賞＋有馬記念＋宝塚記念" },
+  { name:"マヤノトップガン", url:"https://db.netkeiba.com/horse/1992102988/", wins:4, cat:"芝", combo:"菊花賞＋有馬記念＋宝塚記念＋天皇賞(春)", note:"菊花賞(95)・有馬記念(95)・宝塚記念(96)・天皇賞(春)(97)" },
   { name:"グラスワンダー", url:"https://db.netkeiba.com/horse/1995108676/", wins:3, cat:"芝", combo:"朝日杯FS＋有馬記念×2", note:"有馬記念(98・99)×2" },
   { name:"マンハッタンカフェ", url:"https://db.netkeiba.com/horse/1998101554/", wins:3, cat:"芝", combo:"菊花賞＋有馬記念＋天皇賞(春)" },
   { name:"ヒシミラクル", url:"https://db.netkeiba.com/horse/1999104693/", wins:3, cat:"芝", combo:"菊花賞＋天皇賞(春)＋宝塚記念" },
@@ -863,9 +864,9 @@ const HORSES = [
   { name:"メイショウマンボ", url:"https://db.netkeiba.com/horse/2010102094/", wins:3, cat:"芝", combo:"優駿牝馬＋秋華賞＋エリザベス女王杯", note:"優駿牝馬(13)→秋華賞(13)→エリザベス女王杯(13)" },
   { name:"タイトルホルダー", url:"https://db.netkeiba.com/horse/2018103559/", wins:3, cat:"芝", combo:"菊花賞＋天皇賞(春)＋宝塚記念" },
   { name:"ソダシ", url:"https://db.netkeiba.com/horse/2018105233/", wins:3, cat:"芝", combo:"阪神JF＋桜花賞＋ヴィクトリアマイル" },
-  { name:"ラヴズオンリーユー", url:"https://db.netkeiba.com/horse/2016104648/", wins:3, cat:"芝", combo:"優駿牝馬＋BCフィリー&メアターフ(海外)＋香港C(海外)", note:"BCフィリー&メアターフ(21)で日本調教馬初のブリーダーズカップ制覇。同年エクリプス賞最優秀芝牝馬も受賞" },
+  { name:"ラヴズオンリーユー", url:"https://db.netkeiba.com/horse/2016104648/", wins:4, cat:"芝", combo:"優駿牝馬＋クイーンエリザベス2世C(海外)＋BCフィリー&メアターフ(海外)＋香港C(海外)", note:"クイーンエリザベス2世C(21・香港)・BCフィリー&メアターフ(21)で日本調教馬初のブリーダーズカップ制覇・香港C(21)と2021年に海外G1を3勝。BCフィリー&メアターフでエクリプス賞最優秀芝牝馬も受賞" },
   { name:"デアリングタクト", url:"https://db.netkeiba.com/horse/2017100720/", wins:3, cat:"芝", combo:"桜花賞＋優駿牝馬＋秋華賞" },
-  { name:"ソングライン", url:"https://db.netkeiba.com/horse/2018105355/", wins:3, cat:"芝", combo:"ヴィクトリアマイル＋安田記念×2", note:"安田記念(22・24)×2は2年おきの再制覇" },
+  { name:"ソングライン", url:"https://db.netkeiba.com/horse/2018105355/", wins:3, cat:"芝", combo:"ヴィクトリアマイル＋安田記念×2", note:"安田記念(22・23)×2連覇。翌24年は安田記念2着" },
   { name:"レガレイラ", url:"https://db.netkeiba.com/horse/2021105898/", wins:3, cat:"芝", combo:"ホープフルS＋有馬記念＋エリザベス女王杯", note:"有馬記念(24)で3歳牝馬として64年ぶり制覇" },
   { name:"エルコンドルパサー", url:"https://db.netkeiba.com/horse/1995108742/", wins:3, cat:"芝", combo:"NHKマイルC＋ジャパンC＋サンクルー大賞(海外)", note:"サンクルー大賞(99)は日本調教馬初かつ現在唯一の欧州2400m G1制覇。凱旋門賞は2着惜敗。1999年年度代表馬" },
   { name:"ロゴタイプ", url:"https://db.netkeiba.com/horse/2010103783/", wins:3, cat:"芝", combo:"朝日杯FS＋皐月賞＋安田記念" },
@@ -904,6 +905,7 @@ const HORSES = [
   { name:"アイネスフウジン", url:"https://db.netkeiba.com/horse/1987100579/", wins:2, cat:"芝", combo:"朝日杯FS＋日本ダービー" },
   { name:"サクラバクシンオー", url:"https://db.netkeiba.com/horse/1989108341/", wins:2, cat:"芝", combo:"スプリンターズS×2", note:"【サクラバクシンオー】スプリンターズS(92・93)×2" },
   { name:"ダンスパートナー", url:"https://db.netkeiba.com/horse/1992109549/", wins:2, cat:"芝", combo:"優駿牝馬＋エリザベス女王杯", note:"優駿牝馬(95)→エリザベス女王杯(95)" },
+  { name:"シーザリオ", url:"https://db.netkeiba.com/horse/2002100844/", wins:2, cat:"芝", combo:"優駿牝馬＋アメリカンオークスS(海外)", note:"アメリカンオークスS(05)で日本調教馬・父内国産馬初の米国G1制覇。日米オークス馬" },
   { name:"バブルガムフェロー", url:"https://db.netkeiba.com/horse/1993109219/", wins:2, cat:"芝", combo:"朝日杯FS＋天皇賞(秋)", note:"朝日杯FS(95)→天皇賞(秋)(96)" },
   { name:"エアジハード", url:"https://db.netkeiba.com/horse/1995107978/", wins:2, cat:"芝", combo:"安田記念＋マイルCS", note:"同一年春秋マイル制覇はノースフライト(94)・エアジハード(99)・インディチャンプ(19)の3頭。【トロットサンダー】マイルCS(95)→安田記念(96・年またぎ)。当時JRA史上最高齢のG1制覇（後にカンパニーが更新）" },
   { name:"ブラックホーク", url:"https://db.netkeiba.com/horse/1994109361/", wins:2, cat:"芝", combo:"安田記念＋スプリンターズS", note:"【ブラックホーク】スプリンターズS(00)→安田記念(01)" },
@@ -972,6 +974,7 @@ const HORSES = [
   { name:"ジェニュイン", url:"https://db.netkeiba.com/horse/1992109450/", wins:2, cat:"芝", combo:"皐月賞＋マイルCS", note:"皐月賞(95)→マイルCS(95)" },
   { name:"メジロパーマー", url:"https://db.netkeiba.com/horse/1987105372/", wins:2, cat:"芝", combo:"宝塚記念＋有馬記念", note:"宝塚記念(92)→有馬記念(92)。史上5頭目の春秋グランプリ制覇。有馬記念は15番人気での大金星" },
   { name:"サートゥルナーリア", url:"https://db.netkeiba.com/horse/2016104505/", wins:2, cat:"芝", combo:"ホープフルS＋皐月賞", note:"ホープフルS(18)→皐月賞(19)。無敗での皐月賞制覇はディープインパクト以来14年ぶり" },
+  { name:"クロワデュノール", url:"https://db.netkeiba.com/horse/2022105102/", wins:2, cat:"芝", combo:"ホープフルS＋日本ダービー", note:"ホープフルS(24)→日本ダービー(25)" },
   { name:"アルアイン", url:"https://db.netkeiba.com/horse/2014106046/", wins:2, cat:"芝", combo:"皐月賞＋大阪杯", note:"皐月賞(17)→大阪杯(18)" },
   { name:"サトノクラウン", url:"https://db.netkeiba.com/horse/2012104668/", wins:2, cat:"芝", combo:"宝塚記念＋香港ヴァーズ(海外)", note:"香港ヴァーズ(16・海外)→宝塚記念(17)" },
   { name:"ローレルゲレイロ", url:"https://db.netkeiba.com/horse/2004100933/", wins:2, cat:"芝", combo:"高松宮記念＋スプリンターズS", note:"【ローレルゲレイロ】高松宮記念(09)→スプリンターズS(09)。同年春秋スプリントG1制覇" },
@@ -993,6 +996,25 @@ const HORSES = [
   { name:"カツラギエース", url:"https://db.netkeiba.com/horse/1980101425/", wins:2, cat:"芝", combo:"宝塚記念＋ジャパンC", note:"【カツラギエース】宝塚記念(84)→ジャパンC(84)。ジャパンC初代日本馬制覇。同年の三冠馬シンボリルドルフを破る10番人気での大金星" },
   { name:"エフフォーリア", url:"https://db.netkeiba.com/horse/2018105027/", wins:3, cat:"芝", combo:"皐月賞＋天皇賞(秋)＋有馬記念", note:"皐月賞(21)→天皇賞(秋)(21)→有馬記念(21)。2021年JRA賞年度代表馬。3歳で古馬王道G1を2勝した史上3頭目の馬" },
   { name:"メリーナイス", url:"https://db.netkeiba.com/horse/1984100990/", wins:2, cat:"芝", combo:"朝日杯FS＋日本ダービー" },
+  { name:"ルヴァンスレーヴ", url:"https://db.netkeiba.com/horse/2015104189/", wins:4, cat:"ダート", combo:"全日本2歳優駿＋旧ジャパンダートダービー＋マイルチャンピオンシップ南部杯＋チャンピオンズC", note:"全日本2歳優駿(17)→旧ジャパンダートダービー(18)→マイルCS南部杯(18)→チャンピオンズC(18)。3歳でダートG1/Jpn1を4勝" },
+  { name:"クリソベリル", url:"https://db.netkeiba.com/horse/2016104458/", wins:4, cat:"ダート", combo:"旧ジャパンダートダービー＋チャンピオンズC＋帝王賞＋JBCクラシック", note:"旧ジャパンダートダービー(19)→チャンピオンズC(19)→帝王賞(20)→JBCクラシック(20)。2019年JRA最優秀ダートホース" },
+  { name:"スイープトウショウ", url:"https://db.netkeiba.com/horse/2001104313/", wins:3, cat:"芝", combo:"秋華賞＋宝塚記念＋エリザベス女王杯", note:"秋華賞(04)→宝塚記念(05)→エリザベス女王杯(05)。宝塚記念はエイトクラウン以来39年ぶりの牝馬制覇" },
+  { name:"マリアライト", url:"https://db.netkeiba.com/horse/2011103832/", wins:2, cat:"芝", combo:"エリザベス女王杯＋宝塚記念", note:"エリザベス女王杯(15)→宝塚記念(16)。宝塚記念はスイープトウショウ以来11年ぶりの牝馬制覇" },
+  { name:"タスティエーラ", url:"https://db.netkeiba.com/horse/2020103532/", wins:2, cat:"芝", combo:"日本ダービー＋クイーンエリザベス2世C(海外)", note:"日本ダービー(23)→クイーンエリザベス2世C(25・香港)。2023年JRA最優秀3歳牡馬" },
+  { name:"アスコリピチェーノ", url:"https://db.netkeiba.com/horse/2021105354/", wins:2, cat:"芝", combo:"阪神JF＋ヴィクトリアマイル", note:"阪神JF(23)→ヴィクトリアマイル(25)" },
+  { name:"ソウルラッシュ", url:"https://db.netkeiba.com/horse/2018100382/", wins:2, cat:"芝", combo:"マイルCS＋ドバイターフ(海外)", note:"マイルCS(24)→ドバイターフ(25)" },
+  { name:"マックスビューティ", url:"https://db.netkeiba.com/horse/1984104825/", wins:2, cat:"芝", combo:"桜花賞＋優駿牝馬", note:"桜花賞(87)・優駿牝馬(87)の牝馬二冠。桜花賞は2着に8馬身差" },
+  { name:"ソウルスターリング", url:"https://db.netkeiba.com/horse/2014105535/", wins:2, cat:"芝", combo:"阪神JF＋優駿牝馬", note:"阪神JF(16)→優駿牝馬(17)" },
+  { name:"ショウナンパンドラ", url:"https://db.netkeiba.com/horse/2011103584/", wins:2, cat:"芝", combo:"秋華賞＋ジャパンC", note:"秋華賞(14)→ジャパンC(15)" },
+  { name:"シーキングザパール", url:"https://db.netkeiba.com/horse/1994109364/", wins:2, cat:"芝", combo:"NHKマイルC＋モーリスドゲスト賞(海外)", note:"NHKマイルC(97)→モーリスドゲスト賞(98・フランス)。日本馬初の欧州G1制覇" },
+  { name:"ダイイチルビー", url:"https://db.netkeiba.com/horse/1987100260/", wins:2, cat:"芝", combo:"安田記念＋スプリンターズS", note:"安田記念(91)→スプリンターズS(91)。91年JRA最優秀4歳以上牝馬・92年最優秀スプリンター" },
+  { name:"ヴィルシーナ", url:"https://db.netkeiba.com/horse/2009106264/", wins:2, cat:"芝", combo:"ヴィクトリアマイル×2", note:"ヴィクトリアマイル(13・14)×2連覇" },
+  { name:"コスタノヴァ", url:"https://db.netkeiba.com/horse/2020103307/", wins:2, cat:"ダート", combo:"フェブラリーS×2", note:"フェブラリーS(25・26)×2連覇。R.キング騎手(25年)は女性騎手初のJRA・G1制覇" },
+  { name:"ブランディス", url:"https://db.netkeiba.com/horse/1997103718/", wins:2, cat:"障害", combo:"中山グランドジャンプ＋中山大障害", note:"【ブランディス】中山GJ(04)→中山大障害(04)。同一年春秋JG1制覇" },
+  { name:"マジェスティバイオ", url:"https://db.netkeiba.com/horse/2007106305/", wins:2, cat:"障害", combo:"中山グランドジャンプ＋中山大障害", note:"【マジェスティバイオ】中山大障害(11)→中山GJ(12)（勝利順は大障害が先）" },
+  { name:"アポロマーベリック", url:"https://db.netkeiba.com/horse/2009102981/", wins:2, cat:"障害", combo:"中山グランドジャンプ＋中山大障害", note:"【アポロマーベリック】中山大障害(13)→中山GJ(14)（勝利順は大障害が先）。2013・14年連続JRA最優秀障害馬" },
+  { name:"メイショウダッサイ", url:"https://db.netkeiba.com/horse/2013104138/", wins:2, cat:"障害", combo:"中山グランドジャンプ＋中山大障害", note:"【メイショウダッサイ】中山大障害(20)→中山GJ(21)（勝利順は大障害が先）。2020年JRA最優秀障害馬" },
+  { name:"ニシノデイジー", url:"https://db.netkeiba.com/horse/2016103444/", wins:2, cat:"障害", combo:"中山大障害×2", note:"中山大障害(22・24)×2（年またぎ再制覇）" },
 ];
 
 // ============================================================
@@ -1077,6 +1099,8 @@ const RACE_COLOR = {
   "BCフィリー&メアターフ(海外)": { bg:"#172a45", text:"#a8c0ff", border:"#6495ed" },
   "クイーンエリザベス2世C(海外)": { bg:"#1a237e", text:"#c5cae9", border:"#7986cb" },
   "サウジC(海外)":         { bg:"#5c2e00", text:"#fef9c3", border:"#f0a500" },
+  "イスパーン賞(海外)":    { bg:"#1a1040", text:"#c4b5fd", border:"#7c3aed" },
+  "アメリカンオークスS(海外)": { bg:"#0d2b1a", text:"#86efac", border:"#16a34a" },
 };
 
 // ============================================================
@@ -1156,6 +1180,8 @@ const RACE_DIST = {
   "BCフィリー&メアターフ(海外)": 2100,
   "クイーンエリザベス2世C(海外)": 2000,
   "サウジC(海外)":         1800,
+  "イスパーン賞(海外)":    1800,
+  "アメリカンオークスS(海外)": 2400,
 };
 
 // SMILE区分
@@ -1166,6 +1192,7 @@ const SMILE_DEFS = [
   { key:"I", label:"I 中距離",      cls:"smile-I",  min:1900, max:2100 },
   { key:"L", label:"L ロング",      cls:"smile-L",  min:2101, max:2700 },
   { key:"E", label:"E 超長距離",    cls:"smile-E",  min:2701, max:99999 },
+  { key:"JG", label:"JG 障害",      cls:"smile-JG", min:-99999, max:-1 },
 ];
 
 // チャンピオンズC(旧ジャパンカップダート)距離：馬名ごとに走った当時の距離を上書き
@@ -1319,7 +1346,13 @@ function renderCards(combos) {
     const cs = CAT_STYLE[c.cat] || CAT_STYLE["芝"];
     const wb = winBadge(c.wins);
     const cnt = c.horses.length;
-    const cntStyle = cnt >= 5
+    const cntStyle = cnt >= 8
+      ? "background:#450a0a;border:1px solid #ef4444;color:#fca5a5"
+      : cnt === 7
+      ? "background:#422006;border:1px solid #f59e0b;color:#fde68a"
+      : cnt === 6
+      ? "background:#052e16;border:1px solid #22c55e;color:#bbf7d0"
+      : cnt === 5
       ? "background:#7c1d6a;border:1px solid #c026d3;color:#f0abfc"
       : cnt === 4
       ? "background:#7c2d12;border:1px solid #ea580c;color:#fb923c"
@@ -1391,7 +1424,13 @@ function renderTable(combos) {
     const cs = CAT_STYLE[c.cat] || CAT_STYLE["芝"];
     const wb = winBadge(c.wins);
     const cnt = c.horses.length;
-    const cntStyle = cnt >= 5
+    const cntStyle = cnt >= 8
+      ? `background:#450a0a;border:1px solid #ef4444;color:#fca5a5`
+      : cnt === 7
+      ? `background:#422006;border:1px solid #f59e0b;color:#fde68a`
+      : cnt === 6
+      ? `background:#052e16;border:1px solid #22c55e;color:#bbf7d0`
+      : cnt === 5
       ? `background:#7c1d6a;border:1px solid #c026d3;color:#f0abfc`
       : cnt === 4
       ? `background:#7c2d12;border:1px solid #ea580c;color:#fb923c`
