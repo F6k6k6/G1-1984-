@@ -1355,7 +1355,7 @@ function renderChips(combo) {
   }).join('');
 }
 
-function renderCards(combos) {
+function renderCards(combos, hideCnt = false) {
   const cardList = document.getElementById('cardList');
   if (!cardList) return;
   cardList.innerHTML = combos.map(c => {
@@ -1411,7 +1411,7 @@ function renderCards(combos) {
       <div class="card-top">
         <span class="card-win-badge" style="background:${wb.bg};box-shadow:0 0 0 2px ${wb.border},0 2px 8px rgba(0,0,0,.5);color:${wb.text};font-size:13px">${c.wins}<span style="font-size:9px;opacity:0.85;margin-left:1px">勝</span></span>
         <span class="card-cat-badge" style="background:${cs.bg};color:${cs.text};border:1px solid ${cs.border}">${c.cat}</span>
-        <span class="card-count-badge" style="${cntStyle}">${cnt}<span style="font-size:9px;opacity:0.85;margin-left:1px">頭</span></span>
+        ${hideCnt ? '' : `<span class="card-count-badge" style="${cntStyle}">${cnt}<span style="font-size:9px;opacity:0.85;margin-left:1px">頭</span></span>`}
         <div class="card-horse-names">${horseChipsHtml}</div>
       </div>
       <div class="card-chips">${chipsHtml}</div>
@@ -1421,12 +1421,12 @@ function renderCards(combos) {
   }).join('');
 }
 
-function renderTable(combos) {
+function renderTable(combos, hideCnt = false) {
   const tbody = document.getElementById('tbody');
   const empty = document.getElementById('emptyMsg');
   document.getElementById('countBadge').textContent = combos.length + '件';
 
-  renderCards(combos);
+  renderCards(combos, hideCnt);
 
   if (combos.length === 0) {
     tbody.innerHTML = '';
@@ -1464,7 +1464,7 @@ function renderTable(combos) {
       </td>
       <td class="horses-cell"><div class="horse-chips-wrap">${c.horses.map(n => { const u = horseUrlMap[n] || `https://db.netkeiba.com/horse/search/?word=${encodeURIComponent(n)}`; return `<a href="${u}" target="_blank" rel="noopener" class="horse-link${TRIPLE_CROWN_MALE.has(n)||TRIPLE_CROWN_FEMALE.has(n)?' has-crown':''}">${crownPrefix(n)}${n}</a>`; }).join('')}</div></td>
       ${renderDistCell(c.combo, c.horses[0])}
-      <td class="count-td"><span class="count-badge" style="${cntStyle}">${cnt}</span></td>
+      ${hideCnt ? '<td></td>' : `<td class="count-td"><span class="count-badge" style="${cntStyle}">${cnt}</span></td>`}
     </tr>`;
   }).join('');
 }
@@ -1486,39 +1486,74 @@ function getBirthYear(horse) {
 }
 
 function applyFilter() {
-  const combos = buildCombos(HORSES);
-  const filtered = combos.filter(c => {
-    if (currentCat !== "全て" && c.cat !== currentCat) return false;
-    if (!selectedWins.has(c.wins)) return false;
-    if (currentQ) {
-      const s = currentQ.trim();
-      if (!c.combo.includes(s) && !c.horses.some(n => n.includes(s)) && !c.note.includes(s)) return false;
-    }
-    // SMILE区分フィルター（マルチセレクト）
-    if (currentSmile.size < 6) { // 全選択でなければ絞り込む
-      const { minD, maxD, hasJump } = getDistInfo(c.combo, c.horses[0]);
-      const badges = getSmileBadges(minD, maxD, hasJump);
-      const keys = badges.map(b => b.key);
-      if (!keys.some(k => currentSmile.has(k))) return false;
-    }
-    // 距離数値フィルター
-    if (currentDist !== null) {
-      const { minD, maxD, hasJump } = getDistInfo(c.combo, c.horses[0]);
-      if (minD === null) return false;
-      if (currentDist < minD || currentDist > maxD) return false;
-    }
-    return true;
-  });
-  if (sortMode === "birth") {
+  const isBirth = sortMode === "birth";
+
+  if (isBirth) {
+    // 生年モード：1馬1エントリで展開
+    const filtered = HORSES.filter(h => {
+      if (currentCat !== "全て" && h.cat !== currentCat) return false;
+      if (!selectedWins.has(h.wins)) return false;
+      if (currentQ) {
+        const s = currentQ.trim();
+        if (!h.combo.includes(s) && !h.name.includes(s) && !(h.note||'').includes(s)) return false;
+      }
+      if (currentSmile.size < 6) {
+        const { minD, maxD, hasJump } = getDistInfo(h.combo, h.name);
+        const badges = getSmileBadges(minD, maxD, hasJump);
+        const keys = badges.map(b => b.key);
+        if (!keys.some(k => currentSmile.has(k))) return false;
+      }
+      if (currentDist !== null) {
+        const { minD, maxD } = getDistInfo(h.combo, h.name);
+        if (minD === null) return false;
+        if (currentDist < minD || currentDist > maxD) return false;
+      }
+      return true;
+    });
+
     filtered.sort((a, b) => {
-      const ya = Math.min(...a.horses.map(n => getBirthYear(HORSES.find(h => h.name === n) || {})));
-      const yb = Math.min(...b.horses.map(n => getBirthYear(HORSES.find(h => h.name === n) || {})));
+      const ya = getBirthYear(a);
+      const yb = getBirthYear(b);
       return sortOrder === "asc" ? ya - yb : yb - ya;
     });
+
+    // 1馬1エントリのcombo形式に変換
+    const entries = filtered.map(h => ({
+      combo: h.combo,
+      wins:  h.wins,
+      cat:   h.cat,
+      note:  h.note || "",
+      horses:[h.name]
+    }));
+
+    renderTable(entries, true);
+
   } else {
+    // 通常モード：combosでグループ化
+    const combos = buildCombos(HORSES);
+    const filtered = combos.filter(c => {
+      if (currentCat !== "全て" && c.cat !== currentCat) return false;
+      if (!selectedWins.has(c.wins)) return false;
+      if (currentQ) {
+        const s = currentQ.trim();
+        if (!c.combo.includes(s) && !c.horses.some(n => n.includes(s)) && !c.note.includes(s)) return false;
+      }
+      if (currentSmile.size < 6) {
+        const { minD, maxD, hasJump } = getDistInfo(c.combo, c.horses[0]);
+        const badges = getSmileBadges(minD, maxD, hasJump);
+        const keys = badges.map(b => b.key);
+        if (!keys.some(k => currentSmile.has(k))) return false;
+      }
+      if (currentDist !== null) {
+        const { minD, maxD, hasJump } = getDistInfo(c.combo, c.horses[0]);
+        if (minD === null) return false;
+        if (currentDist < minD || currentDist > maxD) return false;
+      }
+      return true;
+    });
     filtered.sort((a, b) => sortOrder === "asc" ? a.wins - b.wins : b.wins - a.wins);
+    renderTable(filtered, false);
   }
-  renderTable(filtered);
 }
 
 // ── Cat buttons
