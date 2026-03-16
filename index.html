@@ -728,6 +728,7 @@
       <button class="sel-btn" id="btnSelectAll">全選択</button>
       <button class="sel-btn" id="btnClearAll">全解除</button>
       <button class="sel-btn" id="btnSort">勝数 ↓ 降順</button>
+      <button class="sel-btn" id="btnSortBirth">生年 ↑ 古順</button>
       <span id="countBadge">0件</span>
     </div>
     <div class="smile-filter-row">
@@ -1475,8 +1476,14 @@ let currentCat = "全て";
 let selectedWins = new Set([2,3,4,5,6,7,9,10,11]); // 初期状態：全選択
 let currentQ = "";
 let sortOrder = "desc"; // "asc" or "desc"
+let sortMode  = "wins"; // "wins" or "birth"
 let currentSmile = new Set(["S","M","I","L","E","JG"]); // 初期状態：全選択
 let currentDist = null;   // 距離数値フィルター
+
+function getBirthYear(horse) {
+  const m = (horse.url || "").match(/horse\/(\d{4})/);
+  return m ? parseInt(m[1]) : 9999;
+}
 
 function applyFilter() {
   const combos = buildCombos(HORSES);
@@ -1502,7 +1509,15 @@ function applyFilter() {
     }
     return true;
   });
-  filtered.sort((a, b) => sortOrder === "asc" ? a.wins - b.wins : b.wins - a.wins);
+  if (sortMode === "birth") {
+    filtered.sort((a, b) => {
+      const ya = Math.min(...a.horses.map(n => getBirthYear(HORSES.find(h => h.name === n) || {})));
+      const yb = Math.min(...b.horses.map(n => getBirthYear(HORSES.find(h => h.name === n) || {})));
+      return sortOrder === "asc" ? ya - yb : yb - ya;
+    });
+  } else {
+    filtered.sort((a, b) => sortOrder === "asc" ? a.wins - b.wins : b.wins - a.wins);
+  }
   renderTable(filtered);
 }
 
@@ -1563,10 +1578,25 @@ document.getElementById('btnClearAll').addEventListener('click', () => {
   applyFilter();
 });
 
-// ── Sort
+// ── Sort (勝数)
 document.getElementById('btnSort').addEventListener('click', () => {
+  sortMode = "wins";
   sortOrder = sortOrder === "asc" ? "desc" : "asc";
   document.getElementById('btnSort').textContent = sortOrder === "asc" ? "勝数 ↑ 昇順" : "勝数 ↓ 降順";
+  document.getElementById('btnSortBirth').textContent = "生年 ↑ 古順";
+  applyFilter();
+});
+
+// ── Sort (生年)
+document.getElementById('btnSortBirth').addEventListener('click', () => {
+  if (sortMode === "birth") {
+    sortOrder = sortOrder === "asc" ? "desc" : "asc";
+  } else {
+    sortMode = "birth";
+    sortOrder = "asc";
+  }
+  document.getElementById('btnSortBirth').textContent = sortOrder === "asc" ? "生年 ↑ 古順" : "生年 ↓ 新順";
+  document.getElementById('btnSort').textContent = "勝数 ↓ 降順";
   applyFilter();
 });
 
