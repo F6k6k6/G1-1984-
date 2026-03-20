@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="format-detection" content="telephone=no">
+<link rel="icon" type="image/png" href="favicon-32x32.png">
 <title>複数G1勝利馬 完全一覧</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Shippori+Mincho:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -1590,23 +1591,15 @@ function applyFilter() {
 
     const entries = [];
     Object.entries(groupMap).forEach(([combo, horses]) => {
-      const isMixed = comboSexMap[combo] && comboSexMap[combo].size > 1;
-      if (isMixed) {
-        // 混合comboは個別行に分割
-        horses.forEach(h => {
-          entries.push({ combo: h.combo, wins: h.wins, cat: h.cat, note: h.note || "", horses: [h.name] });
-        });
-      } else {
-        // 同性のみのcomboはグループ表示
-        const notes = horses.map(h => h.note || '').filter(Boolean);
-        entries.push({
-          combo: combo,
-          wins: Math.max(...horses.map(h => h.wins)),
-          cat: horses[0].cat,
-          note: notes.join(' / '),
-          horses: horses.map(h => h.name)
-        });
-      }
+      // フィルター後に残った馬が1頭でも複数でも、同じcomboの馬はまとめて表示
+      const notes = horses.map(h => h.note || '').filter(Boolean);
+      entries.push({
+        combo: combo,
+        wins: Math.max(...horses.map(h => h.wins)),
+        cat: horses[0].cat,
+        note: notes.join(' / '),
+        horses: horses.map(h => h.name)
+      });
     });
 
     entries.sort((a, b) => sortOrder === "asc" ? a.wins - b.wins : b.wins - a.wins);
