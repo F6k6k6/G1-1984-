@@ -39,14 +39,25 @@
     margin: 0 auto;
   }
   .header-logo {
-    width: 72px;
-    height: 72px;
+    width: 90px;
+    height: 90px;
     object-fit: contain;
-    border-radius: 14px;
-    box-shadow: 0 4px 24px rgba(240,192,96,0.18), 0 2px 8px rgba(0,0,0,0.5);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(240,192,96,0.22), 0 2px 8px rgba(0,0,0,0.5);
     flex-shrink: 0;
+    align-self: stretch;
+  }
+  .header-body {
+    flex: 1;
+    min-width: 0;
   }
   .header-title-row {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    margin-bottom: 8px;
+  }
+  .header-title-inner {
     display: flex;
     gap: 12px;
     align-items: center;
@@ -719,16 +730,20 @@
   <div class="header-inner">
     <div class="header-title-row">
       <img src="ファビコン用元画像.png" alt="G1+ ロゴ" class="header-logo">
-      <div class="header-accent"></div>
-      <div>
-        <div class="header-sub">JAPAN GRADED RACING 1983–2026</div>
-        <h1 class="header-main">複数G1勝利馬 ── 勝鞍の組み合わせ完全一覧</h1>
+      <div class="header-body">
+        <div class="header-title-inner">
+          <div class="header-accent"></div>
+          <div>
+            <div class="header-sub">JAPAN GRADED RACING 1983–2026</div>
+            <h1 class="header-main">複数G1勝利馬 ── 勝鞍の組み合わせ完全一覧</h1>
+          </div>
+        </div>
+        <p class="header-desc">
+          JRA G1・Jpn1（地方交流）・JG1（障害）・海外G1を2勝以上した全馬を収録。同一レース複数勝利は「×N」で表記。<br>
+          データ照合：JRA公式サイト / makworld.net / Wikipedia 各馬個別ページ（2025年末時点）
+        </p>
       </div>
     </div>
-    <p class="header-desc">
-      JRA G1・Jpn1（地方交流）・JG1（障害）・海外G1を2勝以上した全馬を収録。同一レース複数勝利は「×N」で表記。<br>
-      データ照合：JRA公式サイト / makworld.net / Wikipedia 各馬個別ページ（2025年末時点）
-    </p>
   </div>
 </div>
 
